@@ -186,8 +186,8 @@ function Cart() {
                 setProductsInCart((prev) => prev.filter((_, index) => index !== deleteIndex))
                 setCartCookie((prev) => prev.filter((_, index) => index !== deleteIndex))
                 removeCart(cartCookie[deleteIndex])
-                setQuantity((prev) => prev.filter((_, index) => index !== i))
-                setPrice((prev) => prev.filter((_, index) => index !== i))
+                setQuantity((prev) => prev.filter((_, index) => index !== deleteIndex))
+                setPrice((prev) => prev.filter((_, index) => index !== deleteIndex))
                 setAlertOn(false)
               }}>remove</Button>
             </div>

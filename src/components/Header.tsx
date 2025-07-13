@@ -15,7 +15,7 @@ import { fetchCategory } from '../utils/categoryUtils'
 import type { CategoryProps } from '../types'
 import Logo from './ui/logo'
 import { useNavigate } from 'react-router-dom'
-import LoginPopup from './LoginPopUp'
+import LoginPopup from './LoginPopup'
 
 function Header() {
   const [category, setCategory] = useState<CategoryProps[]>([])

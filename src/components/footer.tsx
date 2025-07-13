@@ -1,13 +1,10 @@
 import { useEffect, useState } from 'react'
-import { User, ShoppingBag, Menu, X, Facebook } from 'lucide-react'
-import Searchbar from './Searchbar'
-import Navigation from './Navigation'
 import { useNavigate } from 'react-router-dom'
 import { fetchCategory, sortData } from '../utils/categoryUtils'
 import type { GroupedCategory } from '../types'
 import Dropdown from './ui/dropdown'
 import Logo from './ui/logo'
-import { FaFacebook, FaInstagram, FaLinkedinIn, FaTwitter, FaXing, FaYoutube } from 'react-icons/fa'
+import { FaFacebook, FaInstagram, FaLinkedinIn, FaXing, FaYoutube } from 'react-icons/fa'
 
 
 function Footer() {
