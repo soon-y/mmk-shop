@@ -32,7 +32,7 @@ export const fetchCategory = async () => {
 }
 
 export const getCategoryGroupName = async (category: number): Promise<string> => {
-  const res = await fetchCategory();
+  const res = await fetchCategory()
 
   const productCategory = res.find((el: CategoryProps) => el.id === category)
   if (!productCategory) return ''
