@@ -62,10 +62,20 @@ export type GroupedCategory = {
 
 export type UserProps = {
   id: string
-  name:string
-  avatar_url: string
   created_at: string
   email: string
   password: string
-  admin: boolean
+  firstName: string
+  lastName: string
+  address: string
+}
+
+export type BannerProps = {
+  id: number
+  title: string
+  text: string
+  image: string | File | null
+  order: number
+  buttonName: string
+  buttonLink: string
 }

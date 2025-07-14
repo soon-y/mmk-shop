@@ -10,6 +10,7 @@ import { useNavigate } from 'react-router-dom'
 import { getCategoryGroupName } from '../utils/categoryUtils'
 import { CircleQuestionMark } from 'lucide-react'
 import Popup from '../components/ui/popup'
+import { useAuth } from '../context/auth'
 
 function Cart() {
   const navigate = useNavigate()
@@ -26,6 +27,7 @@ function Cart() {
   const [total, setTotal] = useState<number>(0)
   const [deliveryCharge, setDeliveryCharge] = useState<number>(0)
   const [deleteIndex, setDeleteIndex] = useState<number>(0)
+  const { isAuthenticated } = useAuth()
 
   useEffect(() => {
     document.getElementById('cart')?.scrollIntoView()
@@ -104,7 +106,9 @@ function Cart() {
               :
               <div>
                 <p className='text-gray-400 font-semibold uppercase'>Your shopping bag is empty.</p>
-                <p>Log in to add items to your shopping bag or access items you've already added.</p>
+                {!isAuthenticated &&
+                  <p>Log in to add items to your shopping bag or access items you've already added.</p>
+                }
               </div>
             :
             Array.from({ length: 3 }).map((_, i) => (
@@ -151,7 +155,9 @@ function Cart() {
             </div>
           </div>
           <Button>continue to checkout</Button>
-          <Button classname='bg-white text-black border border-gray-600'>log in</Button>
+          {!isAuthenticated &&
+            <Button classname='bg-white text-black border border-gray-600'>log in</Button>
+          }
         </div>
       </div>
 

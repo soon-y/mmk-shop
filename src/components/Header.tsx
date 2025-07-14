@@ -61,7 +61,7 @@ function Header() {
           <Logo />
           <div className='flex items-center gap-4 md:gap-6'>
             <Searchbar />
-            <UserIcon className='cursor-pointer' onMouseEnter={() => setActiveUser(true)} onMouseLeave={() => setActiveUser(false)} active={activeUser} onClick={()=> setOpenLogin(true)}/>
+            <UserIcon className='cursor-pointer' onMouseEnter={() => setActiveUser(true)} onMouseLeave={() => setActiveUser(false)} active={activeUser} setClicked={setOpenLogin}/>
             <HeartIcon className='cursor-pointer' onClick={() => navigate('/favorites')} onMouseEnter={() => setActiveHeart(true)} onMouseLeave={() => setActiveHeart(false)} active={activeHeart} opacity={0} />
             <CartIcon className='cursor-pointer' onMouseEnter={() => setActiveCart(true)} onMouseLeave={() => setActiveCart(false)} active={activeCart} />
             {!clicked ?
