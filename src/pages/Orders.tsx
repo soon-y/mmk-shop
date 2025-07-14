@@ -1,17 +1,16 @@
-import { useState, useEffect } from 'react'
-import { useAuth } from '../context/auth'
-import type { UserProps } from '../types'
-import { Outlet } from 'react-router-dom'
+// import { useState, useEffect } from 'react'
+// import { useAuth } from '../context/auth'
+// import type { UserProps } from '../types'
 
 
 function Orders() {
-  const { user, setUser } = useAuth()
-  const [orders, setOrders] = useState<UserProps>()
+  // const { user, setUser } = useAuth()
+  // const [orders, setOrders] = useState<UserProps>()
 
 
-  useEffect(() => {
+  // useEffect(() => {
 
-  }, [user])
+  // }, [user])
 
   return (
     <div className="">

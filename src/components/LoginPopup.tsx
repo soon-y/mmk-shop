@@ -3,7 +3,7 @@ import Popup from './ui/popup'
 import Button from './ui/button'
 import Input from './ui/input'
 import { Check, CircleAlert, LoaderCircle, RectangleEllipsis, User } from 'lucide-react'
-import { findCustomerByEmail, login, register } from '../utils/profileUtils'
+import { findCustomerByEmail, register } from '../utils/profileUtils'
 import { useAuth } from '../context/auth'
 
 function LoginPopup({ setClicked }: {
