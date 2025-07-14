@@ -35,7 +35,7 @@ function ResultBox({ product, color, setClicked }: {
   }, [colorIndex])
 
   return (
-    <div className='grid grid-cols-[180px_1fr] gap-2'>
+    <div className='grid grid-cols-[180px_1fr] gap-4'>
       <div className='relative'>
         <div className='w-full aspect-square rounded-md overflow-hidden' onClick={() => {
           navigate(`/products/item?group=${product.category}&id=${product.id}&color=${colorIndex}`)
@@ -46,7 +46,7 @@ function ResultBox({ product, color, setClicked }: {
         <HeartIcon info={info} className='duration-500 hover:scale-110 cursor-pointer absolute right-2 top-1 z-10' active={liked} onClick={() => setLiked(prev => !prev)} />
       </div>
 
-      <div className='h-full justify-center flex flex-col gap-1 text-sm'>
+      <div className='h-full flex flex-col gap-1 text-sm'>
         <p>{product.name}</p>
         <p className='font-bold'>€ {product.price}</p>
         <p className="flex gap-1">
@@ -64,7 +64,7 @@ function ResultBox({ product, color, setClicked }: {
           ))}
         </p>
         <p>Material: {product.material}</p>
-        <p>{product.size.split('/').length === 1 ?
+        <p className='text-magenta'>{product.size.split('/').length === 1 ?
           product.stock[0][colorIndex] > 0 ? '' : 'Out of stock' : ''}</p>
       </div>
     </div>
