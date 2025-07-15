@@ -53,9 +53,11 @@
 }
 
 .swiper-pagination-bullet {
-  background-color: rgba(255, 255, 255, 0.51);
+  background-color: white !important;
+  opacity: 0.5 !important;
 }
 
 .swiper-pagination-bullet-active {
-  background-color: white;
+  background-color: white !important;
+  opacity: 1 !important;
 }
