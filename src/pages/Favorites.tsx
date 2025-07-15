@@ -9,7 +9,6 @@ import LeftSidePanel from '../components/RightSidePanel'
 import SizeSelection from '../components/SizeSelection'
 import AddButton from '../components/AddToCartButton'
 
-
 function Favorites() {
   const navigate = useNavigate()
   const [clicked, setClicked] = useState<boolean>(false)
@@ -32,10 +31,10 @@ function Favorites() {
     if (products[productIndex]) {
       setSizeIndex(products[productIndex].size.split('/').length > 1 ? null : 0)
     }
-  }, [productIndex])
+  }, [products])
 
   return (
-    <div className='mt-[90px] md:mt-[165px] px-4 md:px-6 pb-10'>
+    <div className='mt-[90px] md:mt-[154px] px-4 md:px-6 pb-10'>
       <h1>Favorites</h1>
       {products.length === 0 ?
         <div className='justify-center flex flex-col gap-4'>
