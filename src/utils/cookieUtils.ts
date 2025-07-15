@@ -77,11 +77,35 @@ export function saveCart(product: string) {
     }
   }
 
-  if (!cart.includes(product)) {
+  const newKey = product.split('-')[0]
+  const exists = cart.some(item => item.split('-')[0] === newKey)
+
+  if (!exists) {
     cart.push(product)
   }
 
   setCookie('cart', JSON.stringify(cart))
+}
+
+export function updateCart(product: string) {
+  const cartRaw = getCookie('cart')
+  let cart: string[] = []
+
+  if (cartRaw) {
+    try {
+      cart = JSON.parse(cartRaw)
+    } catch {
+      cart = []
+    }
+  }
+
+  const newKey = product.split('-')[0]
+  const updatedCart = cart.map(item => {
+    const [key] = item.split('-')
+    return key === newKey ? product : item
+  })
+
+  setCookie('cart', JSON.stringify(updatedCart))
 }
 
 export function removeCart(product: string) {

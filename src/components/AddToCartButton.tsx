@@ -11,7 +11,7 @@ function AddButton({ id, sizeID, colorID, stock, setClicked }: {
 }) {
   const navigate = useNavigate()
   const addtoCart = () => {
-    saveCart(id + '/' + sizeID + '/' + colorID)
+    saveCart(id + '/' + sizeID + '/' + colorID +'-1')
     removeFavorite(id + '/' + colorID)
     if (setClicked) setClicked(false)
     navigate('/cart')

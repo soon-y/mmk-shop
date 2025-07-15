@@ -38,7 +38,12 @@ function Cart() {
     })
 
     getCookieProducts('cart').then(({ cookieName, filtered, stock, imgCountArr }) => {
-      setQuantity(Array(cookieName.length).fill(1))
+
+      let qntArray: number[] = []
+      cookieName.map((el) => {
+        qntArray.push(Number(el.split('-')[1]))
+      })
+      setQuantity(qntArray)
       setCartCookie(cookieName)
       setProductsInCart(filtered)
       setImageCount(imgCountArr)
@@ -75,10 +80,10 @@ function Cart() {
               productsInCart.map((item, i) => (
                 <div className='grid grid-cols-[170px_1fr] gap-4 items-center cursor-pointer' key={i}>
                   <div className='relative'>
-                    {imageCount.length > 0 && cartCookie.length > 0 && <img className='rounded-md' src={item.images[imageCount[0][Number(cartCookie[i].split('/')[2])]]}
-                      onClick={() => navigate(`/products/item?group=${getCategoryGroupName(item.category)}&id=${item.id}&color=${cartCookie[i].split('/')[2]}`)} />}
+                    {imageCount.length > 0 && cartCookie.length > 0 && <img className='rounded-md' src={item.images[imageCount[0][Number(cartCookie[i].split('-')[0].split('/')[2])]]}
+                      onClick={() => navigate(`/products/item?group=${getCategoryGroupName(item.category)}&id=${item.id}&color=${cartCookie[i].split('-')[0].split('/')[2]}`)} />}
                     <HeartIcon className='absolute top-1 right-2' onClick={() => {
-                      saveFavorite(item.id + '/' + cartCookie[i].split('/')[2])
+                      saveFavorite(item.id + '/' + cartCookie[i].split('-')[0].split('/')[2])
                       setProductsInCart((prev) => prev.filter((_, index) => index !== i))
                       setCartCookie((prev) => prev.filter((_, index) => index !== i))
                       setQuantity((prev) => prev.filter((_, index) => index !== i))
@@ -91,15 +96,15 @@ function Cart() {
                     <p className='font-semibold'>€ {item.price}</p>
                     <div className='text-xs/4 my-2'>
                       <p className='inline-block w-[70px]'>Color</p>
-                      <p className='inline-block'>{item.color.split('/')[Number(cartCookie[i].split('/')[2])]}</p> <br />
+                      <p className='inline-block'>{item.color.split('/')[Number(cartCookie[i].split('-')[0].split('/')[2])]}</p> <br />
                       <p className='inline-block w-[70px]'>Size</p>
-                      <p className='inline-block'>{item.size.split('/')[Number(cartCookie[i].split('/')[1])]}</p> <br />
+                      <p className='inline-block'>{item.size.split('/')[Number(cartCookie[i].split('-')[0].split('/')[1])]}</p> <br />
                       <p className='inline-block w-[70px]'>Quantity</p>
                       {quantity && <p className='inline-block'>{quantity[i] === 0 ? 1 : quantity[i]}</p>} <br />
                       <p className='inline-block w-[70px]'>Total</p>
                       {quantity && <p className='inline-block font-semibold'> {quantity[i] === 0 ? item.price : (item.price * quantity[i]).toFixed(2)} €</p>} <br />
                     </div>
-                    {quantity && <QuantityInput index={i} max={stock[i]} qnt={quantity} setQnt={setQuantity} />}
+                    {quantity && <QuantityInput index={i} max={stock[i]} qnt={quantity} setQnt={setQuantity} setCartCookie={setCartCookie} />}
                   </div>
                 </div>
               ))

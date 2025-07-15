@@ -72,7 +72,7 @@ export const getCookieProducts = async (name: string): Promise<{
   const stock: number[] = []
 
   cookieName.forEach(item => {
-    const itemArr = item.split('/').map(el => Number(el))
+    const itemArr = item.split('-')[0].split('/').map(el => Number(el))
     const product: ProductProps = res.find((el: ProductProps) => el.id === itemArr[0])
     if (product) {
       filtered.push(product)

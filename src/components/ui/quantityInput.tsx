@@ -1,7 +1,14 @@
 import { Minus, Plus } from 'lucide-react'
 import { useEffect, useState } from 'react'
+import { updateCart } from '../../utils/cookieUtils'
 
-function QuantityInput({ index, max, qnt, setQnt }: { index: number, max: number, qnt: number[], setQnt: React.Dispatch<React.SetStateAction<number[]>> }) {
+function QuantityInput({ index, max, qnt, setQnt, setCartCookie }: {
+  index: number,
+  max: number,
+  qnt: number[],
+  setQnt: React.Dispatch<React.SetStateAction<number[]>>
+  setCartCookie: React.Dispatch<React.SetStateAction<string[]>>
+}) {
   const [value, setValue] = useState(qnt[index])
 
   const decrease = () => {
@@ -18,11 +25,19 @@ function QuantityInput({ index, max, qnt, setQnt }: { index: number, max: number
       array[index] = value
       return array
     })
-
   }, [value])
 
   useEffect(() => {
     setValue(qnt[index])
+    
+    setCartCookie(prev => {
+      const updated = [...prev]
+      const [idPart] = prev[index].split('-')
+      updated[index] = `${idPart}-${qnt[index]}`
+      updateCart(updated[index])
+
+      return updated
+    })
   }, [qnt])
 
   return (
