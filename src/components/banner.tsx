@@ -34,7 +34,6 @@ function Banner() {
     })
 
     fetchBanner().then((res) => {
-      console.log(res)
       setBanners(sortBanner(res))
     })
   }, [])
