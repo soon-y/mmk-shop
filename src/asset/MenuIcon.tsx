@@ -14,37 +14,61 @@ const MenuIcon = forwardRef<SVGSVGElement, MenuIconProps>(
       <svg
         aria-label="menu"
         role="img"
-        viewBox="0 0 298 257"
+        viewBox="-20 0 350 257"
         width="20"
         height="20"
         ref={ref}
         onClick={onClick}
         {...props}
-      >      
-         <path
-            fill="none"
-            stroke={magenta}
-            strokeWidth={40}
-            strokeLinecap="round"
-            d="m22 27h254"
-          />
+      >
+        <path
+          fill="white"
+          stroke="white"
+          strokeWidth={90}
+          strokeLinecap="round"
+          d="m22 27h254"
+        />
 
-          <path
-            fill="none"
-            stroke={cyan}
-            strokeWidth={40}
-            strokeLinecap="round"
-            d="m22 130h254"
-          />
+        <path
+          fill="white"
+          stroke="white"
+          strokeWidth={90}
+          strokeLinecap="round"
+          d="m22 130h254"
+        />
 
-          <path
-            fill="none"
-            stroke={magenta}
-            strokeWidth={40}
-            strokeLinecap="round"
-            d="m22 233h254"
-          />
-          
+        <path
+          fill="white"
+          stroke="white"
+          strokeWidth={90}
+          strokeLinecap="round"
+          d="m22 233h254"
+        />
+
+        <path
+          fill="none"
+          stroke={magenta}
+          strokeWidth={40}
+          strokeLinecap="round"
+          d="m22 27h254"
+        />
+
+        <path
+          fill="none"
+          stroke={cyan}
+          strokeWidth={40}
+          strokeLinecap="round"
+          d="m22 130h254"
+        />
+
+        <path
+          fill="none"
+          stroke={magenta}
+          strokeWidth={40}
+          strokeLinecap="round"
+          d="m22 233h254"
+        />
+
       </svg>
     )
   }

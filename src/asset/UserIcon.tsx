@@ -25,13 +25,28 @@ const UserIcon = forwardRef<SVGSVGElement, UserIconProps>(
       <svg
         aria-label="user"
         role="img"
-        viewBox="0 0 320 370"
+        viewBox="-40 -20 400 400"
         width="20"
-        height="20"
+        height="24"
         ref={ref}
         onClick={HandleClicked}
         {...props}
       >
+        <path
+          fill="white"
+          stroke="white"
+          strokeWidth={90}
+          strokeLinecap="round"
+          d="m16.1 173h291c2.8-0.1 5 2.2 5 5v166c0 2.7-2.2 5-5 4.9h-291c-2.8 0.1-5-2.2-5-4.9v-166c0-2.8 2.2-5.1 5-5zm4 10l284 157.9"
+        />
+
+        <path
+          fill="white"
+          stroke="white"
+          strokeWidth={90}
+          d="m161.5 149c-35.7 0-64.5-28.8-64.5-64.5 0-35.7 28.8-64.5 64.5-64.5 35.7 0 64.5 28.8 64.5 64.5 0 35.7-28.8 64.5-64.5 64.5z"
+        />
+
         <path style={{ mixBlendMode: 'multiply' }}
           fill="none"
           stroke={magenta}
