@@ -25,12 +25,11 @@ function SimilarProducts({ category, productIndex }: { category: number, product
       {products && products.length > 0 &&
         <div className='p-4 md:p-0 '>
           <p className='font-bold py-2'>Similar products</p>
-
-          {products.map((product) => (
-            <div key={product.id} className='grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-1 md:gap-2 flex-wrap'>
+          <div className='grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-x-2 gap-y-4 flex-wrap'>
+            {products.map((product) => (
               <ItemBox product={product} key={product.id} />
-            </div>
-          ))}
+            ))}
+          </div>
 
         </div>
       }
