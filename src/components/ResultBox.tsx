@@ -2,8 +2,6 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import type { ProductResultProps } from '../types'
 import HeartIcon from '../asset/HeartIcon'
-import { imgCount } from '../utils/productUtils'
-import { getCookie } from '../utils/cookieUtils'
 
 function ResultBox({ product, color, setClicked }: {
   product: ProductResultProps,
@@ -11,27 +9,22 @@ function ResultBox({ product, color, setClicked }: {
   setClicked: React.Dispatch<React.SetStateAction<boolean>>
 }) {
   const navigate = useNavigate()
-  const [liked, setLiked] = useState<boolean | null>(null)
   const [colorIndex, setColorIndex] = useState<number>(0)
-  const imageCount: number[] = imgCount(product.imagesCount)
-  const [info, setInfo] = useState<string>('')
+  const [favInfo, setFavInfo] = useState<{ id: number, size: number, color: number }>({ id: 0, size: 0, color: 0 })
 
   useEffect(() => {
-    setInfo(product.id.toString() + '/' + colorIndex)
-
-    const favorite = getCookie('favorites')
-    if (favorite.includes(product.id.toString() + '/' + color)) setLiked(true)
+    setFavInfo({ id: product.id, size: 0, color: colorIndex })
   }, [])
 
   useEffect(() => {
     if (color && color !== '') {
-      const index = product.color.toLowerCase().split('/').indexOf(color.toLowerCase())
+      const index = product.color.findIndex((el) => el.toLowerCase() === color.toLowerCase())
       setColorIndex(index !== -1 ? index : 0)
     } else setColorIndex(0)
   }, [color])
 
   useEffect(() => {
-    setInfo(product.id.toString() + '/' + colorIndex)
+    setFavInfo({ id: product.id, size: 0, color: colorIndex })
   }, [colorIndex])
 
   return (
@@ -41,9 +34,9 @@ function ResultBox({ product, color, setClicked }: {
           navigate(`/products/item?group=${product.category}&id=${product.id}&color=${colorIndex}`)
           setClicked(false)
         }}>
-          <img src={product.images[imageCount[colorIndex]]} alt="Product" className=' cursor-pointer rounded-md hover:scale-105 duration-500' />
+          <img src={product.images[colorIndex][0]} alt="Product" className=' cursor-pointer rounded-md hover:scale-105 duration-500' />
         </div>
-        <HeartIcon info={info} className='duration-500 hover:scale-110 cursor-pointer absolute right-2 top-1 z-10' active={liked} onClick={() => setLiked(prev => !prev)} />
+        <HeartIcon info={favInfo} classname='absolute right-2 top-1 z-10' />
       </div>
 
       <div className='h-full flex flex-col gap-1 text-sm'>
@@ -51,20 +44,20 @@ function ResultBox({ product, color, setClicked }: {
         <p className='font-bold'>€ {product.price}</p>
         <p className="flex gap-1">
           Size:
-          {product.size.split('/').map((size, i) => (
+          {product.size.map((size, i) => (
             <span key={i} className={`${product.stock[i][colorIndex] > 0 ? 'font-semibold' : 'line-through text-gray-400'}`}>{size}</span>
           ))}
         </p>
 
         <p className="text-sm flex gap-1">
-          {product.colorHex.split('/').map((color, i) => (
+          {product.colorHex.map((color, i) => (
             <span key={i} className="cursor-pointer w-5 my-1 aspect-square rounded-full border-2" onClick={() => { setColorIndex(i) }} style={{
               backgroundColor: color
             }}></span>
           ))}
         </p>
         <p>Material: {product.material}</p>
-        <p className='text-magenta'>{product.size.split('/').length === 1 ?
+        <p className='text-magenta'>{product.size.length === 1 ?
           product.stock[0][colorIndex] > 0 ? '' : 'Out of stock' : ''}</p>
       </div>
     </div>

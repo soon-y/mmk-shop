@@ -1,12 +1,12 @@
 import { useState, useEffect, type ReactNode } from 'react'
 import { ListFilter } from 'lucide-react'
 import LeftSidePanel from './RightSidePanel'
-import type { ProductProps } from '../types'
+import type { ProductSortedProps } from '../types'
 import DualRangeSlider from './ui/dualRangeSlider'
 import Button from './ui/button'
 
 export default function Filter({ products, filterColor, filterSize, filterPriceRange, result, setFilterColor, setFilterSize, setFilterPriceRange }: {
-  products: ProductProps[]
+  products: ProductSortedProps[]
   filterColor: string[]
   filterSize: string[]
   filterPriceRange: number[]
@@ -26,15 +26,14 @@ export default function Filter({ products, filterColor, filterSize, filterPriceR
       const sizeSet = new Set<string>()
       const prices: number[] = []
       for (const item of products) {
-        item.colorHex.split('/').forEach(color => colorSet.add(color))
-        item.size.split('/').forEach(size => sizeSet.add(size))
+        item.colorHex.forEach(color => colorSet.add(color))
+        item.size.forEach(size => sizeSet.add(size))
         prices.push(item.price)
       }
 
       setColorArr(Array.from(colorSet))
       setSizeArr(Array.from(sizeSet))
       setPriceRange([Math.min(...prices), Math.max(...prices)])
-
     }
   }, [products])
 
@@ -75,7 +74,7 @@ export default function Filter({ products, filterColor, filterSize, filterPriceR
           </div>
 
           <div className='absolute left-0 bottom-0 w-full p-6'>
-            <Button onClick={() => setClicked(true)}>
+            <Button onClick={() => setClicked(false)}>
               Show [{result}]
             </Button>
           </div>

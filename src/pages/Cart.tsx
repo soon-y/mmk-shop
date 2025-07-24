@@ -1,77 +1,75 @@
 import { useState, useEffect } from 'react'
 import Button from '../components/ui/button'
-import type { ProductProps } from '../types'
-import { getCookieProducts } from '../utils/productUtils'
-import ItemBox from '../components/ItemBox'
+import type { UserSelectionProps, ProductSortedProps } from '../types'
+import { getCookiesProducts, getUserProducts } from '../utils/productUtils'
 import QuantityInput from '../components/ui/quantityInput'
 import HeartIcon from '../asset/HeartIcon'
-import { removeCart, saveFavorite } from '../utils/cookieUtils'
+import { removeCookie } from '../utils/cookiesUtils'
 import { useNavigate } from 'react-router-dom'
 import { getCategoryGroupName } from '../utils/categoryUtils'
 import { CircleQuestionMark } from 'lucide-react'
 import Popup from '../components/ui/popup'
+import RecentView from '../components/RecentView'
 import { useAuth } from '../context/auth'
+import { deleteUserSelection } from '../utils/userUtils'
+import LoginPopup from '../components/LoginPopup'
 
 function Cart() {
   const navigate = useNavigate()
   const [alertOn, setAlertOn] = useState<boolean>(false)
+  const [loginClicked, setLoginClicked] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(true)
-  const [productsInCart, setProductsInCart] = useState<ProductProps[]>([])
-  const [productsInHistory, setProductsInHistory] = useState<ProductProps[]>([])
-  const [historyCookie, setHistoryCookie] = useState<string[]>([])
-  const [cartCookie, setCartCookie] = useState<string[]>([])
-  const [imageCount, setImageCount] = useState<number[][]>([])
-  const [quantity, setQuantity] = useState<number[]>([])
-  const [price, setPrice] = useState<number[]>([])
-  const [stock, setStock] = useState<number[]>([])
+  const [productsInCart, setProductsInCart] = useState<ProductSortedProps[]>([])
+  const [userCart, setUserCart] = useState<UserSelectionProps[]>([])
   const [total, setTotal] = useState<number>(0)
   const [deliveryCharge, setDeliveryCharge] = useState<number>(0)
   const [deleteIndex, setDeleteIndex] = useState<number>(0)
   const { isAuthenticated } = useAuth()
+  const { user } = useAuth()
 
   useEffect(() => {
-    document.getElementById('cart')?.scrollIntoView()
+    window.scrollTo(0, 0)
 
-    getCookieProducts('history').then(({ cookieName, filtered }) => {
-      setHistoryCookie(cookieName)
-      setProductsInHistory(filtered)
-    })
-
-    getCookieProducts('cart').then(({ cookieName, filtered, stock, imgCountArr }) => {
-
-      let qntArray: number[] = []
-      cookieName.map((el) => {
-        qntArray.push(Number(el.split('-')[1]))
+    if (user) {
+      getUserProducts('cart', user.id).then(({ userItem, filtered }) => {
+        setUserCart(userItem)
+        setProductsInCart(filtered)
+        setLoading(false)
       })
-      setQuantity(qntArray)
-      setCartCookie(cookieName)
-      setProductsInCart(filtered)
-      setImageCount(imgCountArr)
-      setStock(stock)
-
-      const priceArray = filtered.map((el: ProductProps) => el.price)
-      setPrice(priceArray)
-      setLoading(false)
-    })
-  }, [])
+    } else {
+      getCookiesProducts('cart').then(({ cookiesItem, filtered }) => {
+        setUserCart(cookiesItem)
+        setProductsInCart(filtered)
+        setLoading(false)
+      })
+    }
+  }, [user])
 
   useEffect(() => {
-    if (quantity.length && price.length) {
-      const total = quantity.reduce((acc, qty, i) => acc + qty * price[i], 0)
-      const deliveryCharge = total > 30 ? 0 : 1.49
-      setDeliveryCharge(deliveryCharge)
-      setTotal(total)
-    }
+    let total = 0
+    let foundZeroQntIndex: number | null = null
 
-    if (quantity.includes(0)) {
-      const index = quantity.indexOf(0)
+    userCart.forEach((el, i) => {
+      const quantity = el.qnt ?? 1
+      total += quantity * productsInCart[i].price
+
+      if (quantity === 0 && foundZeroQntIndex === null) {
+        foundZeroQntIndex = i
+      }
+    })
+
+    const deliveryCharge = total > 50 ? 0 : 1.49
+    setTotal(total)
+    setDeliveryCharge(deliveryCharge)
+
+    if (foundZeroQntIndex !== null) {
       setAlertOn(true)
-      setDeleteIndex(index)
+      setDeleteIndex(foundZeroQntIndex)
     }
-  }, [quantity])
+  }, [userCart])
 
   return (
-    <div className='container px-4 md:px-6 pb-10' id='cart'>
+    <div className='container px-4 md:px-6 pb-10'>
       <h1>Cart</h1>
       <div className='gap-4 grid grid-rows md:grid-cols-[1fr_300px] lg:grid-cols-[1fr_400px]'>
         <div className='flex flex-col gap-4'>
@@ -80,31 +78,23 @@ function Cart() {
               productsInCart.map((item, i) => (
                 <div className='grid grid-cols-[170px_1fr] gap-4 items-center cursor-pointer' key={i}>
                   <div className='relative'>
-                    {imageCount.length > 0 && cartCookie.length > 0 && <img className='rounded-md' src={item.images[imageCount[0][Number(cartCookie[i].split('-')[0].split('/')[2])]]}
-                      onClick={() => navigate(`/products/item?group=${getCategoryGroupName(item.category)}&id=${item.id}&color=${cartCookie[i].split('-')[0].split('/')[2]}`)} />}
-                    <HeartIcon className='absolute top-1 right-2' onClick={() => {
-                      saveFavorite(item.id + '/' + cartCookie[i].split('-')[0].split('/')[2])
-                      setProductsInCart((prev) => prev.filter((_, index) => index !== i))
-                      setCartCookie((prev) => prev.filter((_, index) => index !== i))
-                      setQuantity((prev) => prev.filter((_, index) => index !== i))
-                      setPrice((prev) => prev.filter((_, index) => index !== i))
-                      removeCart(cartCookie[i])
-                    }} />
+                    {item.imagesCount.length > 0 && userCart.length > 0 &&
+                      <img className='rounded-md' src={item.images[userCart[i].color][0]}
+                        onClick={() => navigate(`/products/item?group=${getCategoryGroupName(item.category)}&id=${item.id}&color=${userCart[i].color}`)}
+                      />}
+                    <HeartIcon classname='absolute top-1 right-2' info={userCart[i]} />
                   </div>
                   <div>
                     <p>{item.name}</p>
-                    <p className='font-semibold'>€ {item.price}</p>
-                    <div className='text-xs/4 my-2'>
-                      <p className='inline-block w-[70px]'>Color</p>
-                      <p className='inline-block'>{item.color.split('/')[Number(cartCookie[i].split('-')[0].split('/')[2])]}</p> <br />
-                      <p className='inline-block w-[70px]'>Size</p>
-                      <p className='inline-block'>{item.size.split('/')[Number(cartCookie[i].split('-')[0].split('/')[1])]}</p> <br />
-                      <p className='inline-block w-[70px]'>Quantity</p>
-                      {quantity && <p className='inline-block'>{quantity[i] === 0 ? 1 : quantity[i]}</p>} <br />
-                      <p className='inline-block w-[70px]'>Total</p>
-                      {quantity && <p className='inline-block font-semibold'> {quantity[i] === 0 ? item.price : (item.price * quantity[i]).toFixed(2)} €</p>} <br />
+                    <p className='font-semibold'>€ {item.price.toFixed(2)}</p>
+                    <div className='text-xs/4 my-2 grid grid-cols-[70px_1fr]'>
+                      <p>Color</p><p>{item.color[userCart[i].color]}</p>
+                      <p>Size</p><p>{item.size[userCart[i].size]}</p>
+                      <p>Quantity</p><p>{userCart[i].qnt === 0 ? 1 : userCart[i].qnt}</p>
+                      <p>Total</p>
+                      <p className='font-bold'>{userCart[i].qnt === 0 ? item.price.toFixed(2) : (item.price * userCart[i].qnt!).toFixed(2)} €</p>
                     </div>
-                    {quantity && <QuantityInput index={i} max={stock[i]} qnt={quantity} setQnt={setQuantity} setCartCookie={setCartCookie} />}
+                    <QuantityInput index={i} max={item.stock[userCart[i].size][userCart[i].color]} userCart={userCart} setUserCart={setUserCart} />
                   </div>
                 </div>
               ))
@@ -139,7 +129,7 @@ function Cart() {
               <div>
                 <div className='flex justify-between'>
                   <p>Order value</p>
-                  <p className='font-bold'>{total} €</p>
+                  <p className='font-bold'>{total.toFixed(2)} €</p>
                 </div>
                 <div className='flex justify-between mb-2'>
                   <div>
@@ -154,30 +144,19 @@ function Cart() {
               </div>
             }
 
-            <div className='flex justify-between'>
+            <div className='flex justify-between my-4'>
               <p>TOTAL</p>
-              <p className='font-bold'>{total + deliveryCharge} €</p>
+              <p className='font-bold'>{productsInCart.length > 0 && (total + deliveryCharge).toFixed(2)} €</p>
             </div>
           </div>
-          <Button>continue to checkout</Button>
-          {!isAuthenticated &&
-            <Button classname='bg-white text-black border border-gray-600'>log in</Button>
+          {isAuthenticated ?
+            <Button disabled={total === 0}>continue to checkout</Button> :
+            <Button onClick={() => setLoginClicked(true)}>log in to checkout</Button>
           }
         </div>
       </div>
 
-      {productsInHistory.length > 0 &&
-        <div>
-          <div className='uppercase pt-12 mb-2'>Recently viewed</div>
-          <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-5'>
-            {productsInHistory.slice(0, 12).map((item, i) => (
-              <div key={i}>
-                <ItemBox product={item} color={Number(historyCookie[i].split('/')[1])} />
-              </div>
-            ))}
-          </div>
-        </div>
-      }
+      <RecentView />
 
       {alertOn &&
         <Popup title='Remove Article' setClicked={setAlertOn}>
@@ -187,23 +166,21 @@ function Cart() {
             <div className='grid grid-cols-2 gap-4 mt-8'>
               <Button classname='bg-white border border-gray-600' onClick={() => {
                 setAlertOn(false)
-                setQuantity((prev) => {
-                  const array = [...prev]
-                  array[deleteIndex] = 1
-                  return array
-                })
               }}>cancel</Button>
               <Button onClick={() => {
                 setProductsInCart((prev) => prev.filter((_, index) => index !== deleteIndex))
-                setCartCookie((prev) => prev.filter((_, index) => index !== deleteIndex))
-                removeCart(cartCookie[deleteIndex])
-                setQuantity((prev) => prev.filter((_, index) => index !== deleteIndex))
-                setPrice((prev) => prev.filter((_, index) => index !== deleteIndex))
+                setUserCart((prev) => prev.filter((_, index) => index !== deleteIndex))
+                if (user) deleteUserSelection('cart', user.id, userCart[deleteIndex])
+                else removeCookie('cart', userCart[deleteIndex])
                 setAlertOn(false)
               }}>remove</Button>
             </div>
           </div>
         </Popup>
+      }
+
+      {loginClicked &&
+        <LoginPopup setClicked={setLoginClicked} />
       }
     </div>
   )

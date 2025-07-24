@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef, useLayoutEffect } from 'react'
-import type { ProductProps } from '../types'
+import type { ProductSortedProps } from '../types'
 import HeartIcon from '../asset/HeartIcon'
-import { fetchProduct, grouppingImgs, grouppingStock } from '../utils/productUtils'
+import { fetchProductAndSortData } from '../utils/productUtils'
 import Button from '../components/ui/button'
 import Dropdown from '../components/ui/dropdown'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
@@ -10,9 +10,12 @@ import gsap from 'gsap'
 import { ScrollTrigger } from "gsap/ScrollTrigger"
 import SimilarProducts from '../components/SimilarProducts'
 import { useLocation } from 'react-router-dom'
-import { getCookie, saveHistory } from '../utils/cookieUtils'
+import { saveHistory } from '../utils/cookiesUtils'
 import SizeSelection from '../components/SizeSelection'
-import AddButton from '../components/AddToCartButton'
+import AddToCartButton from '../components/AddToCartButton'
+import { useAuth } from '../context/auth'
+import AddToCartBox from '../components/AddToCartBox'
+import { useGSAP } from '@gsap/react'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -22,18 +25,17 @@ function ItemDetail() {
   const descRef = useRef<HTMLDivElement>(null)
   const imgRef = useRef<HTMLDivElement>(null)
   const [loading, setLoading] = useState<boolean>(true)
-  const [product, setProduct] = useState<ProductProps>()
-  const [colorID, setColorID] = useState<number>(0)
-  const [sizeID, setSizeID] = useState<number | null>(null)
+  const [product, setProduct] = useState<ProductSortedProps | null>()
+  const [colorIndex, setColorIndex] = useState<number>(0)
+  const [sizeIndex, setSizeIndex] = useState<number | null>(null)
   const [scrollImgIndex, setScrollImgIndex] = useState<number>(0)
-  const [imagesByColors, setImagesByColors] = useState<string[][]>([])
-  const [stock, setStock] = useState<number[][]>([])
-  const [liked, setLiked] = useState<boolean | null>(null)
-  const [info, setInfo] = useState<string>('')
+  const [favInfo, setFavInfo] = useState<{ id: number, size: number, color: number }>({ id: 0, size: 0, color: 0 })
   const [id, setID] = useState<number | undefined>()
   const skeletonStyle = 'rounded-md bg-gray-100 animate-pulse text-gray-200'
   const { windowWidth } = useWindowSize()
   const touchDevice = isTouchDevice()
+  const { user } = useAuth()
+  const [addtoCart, setAddtoCart] = useState<boolean>(false)
 
   useEffect(() => {
     const useQuery = () => new URLSearchParams(location.search)
@@ -43,50 +45,43 @@ function ItemDetail() {
     else setID(undefined)
 
     const color = query.get('color')
-    if (color) setColorID(Number(color))
-    else setColorID(0)
+    if (color) setColorIndex(Number(color))
+    else setColorIndex(0)
 
-    document.getElementById('top')?.scrollIntoView()
+    window.scrollTo(0, 0)
   }, [location])
 
   useEffect(() => {
     if (id !== undefined) {
-      fetchProduct(id).then((res) => {
-        setProduct(res.data)
-        setImagesByColors(grouppingImgs(res.data.images, res.data.imagesCount))
-        setStock(grouppingStock(res.data.stock))
-        setSizeID(res.data.size.split('/').length > 1 ? null : 0)
-        setInfo(id.toString() + '/' + colorID)
-
-        saveHistory(id?.toString() + '/' + colorID)
-
-        const favorite = getCookie('favorites')
-        if (favorite.includes(id.toString())) setLiked(true)
+      fetchProductAndSortData(id).then((res) => {
+        if (res !== null) {
+          setProduct(res)
+          setSizeIndex(res.size.length > 1 ? null : 0)
+          setFavInfo({ id: res.id, size: 0, color: colorIndex })
+          saveHistory({ id: res.id, size: 0, color: colorIndex })
+        }
         setLoading(false)
       })
     }
-  }, [id])
+  }, [id, user])
 
   useEffect(() => {
-    setInfo(id?.toString() + '/' + colorID)
-    const favorite = getCookie('favorites')
-    if (favorite.includes(id?.toString() + '/' + colorID)) setLiked(true)
-    else setLiked(false)
-
-    if (id) saveHistory(id?.toString() + '/' + colorID)
-  }, [colorID])
+    if (id) {
+      setFavInfo({ id: id, size: 0, color: colorIndex })
+      saveHistory({ id: id, size: 0, color: colorIndex })
+    }
+  }, [colorIndex])
 
   useEffect(() => {
     if (windowWidth < 768) setScrollImgIndex(0)
   }, [windowWidth])
 
-  useLayoutEffect(() => {
-    const img = imgRef.current
+  useGSAP(() => {
     const desc = descRef.current
 
-    if (!img || !desc) {
+    if (!desc) {
       const observer = new MutationObserver(() => {
-        if (imgRef.current && descRef.current) {
+        if (descRef.current) {
           observer.disconnect()
           initScrollTrigger()
         }
@@ -102,7 +97,7 @@ function ItemDetail() {
         scrollTriggerRef.current.kill()
       }
 
-      if (window.innerWidth >= 768 && !touchDevice && imgRef.current && descRef.current) {
+      if (window.innerWidth >= 768 && !touchDevice && descRef.current) {
         scrollTriggerRef.current = ScrollTrigger.create({
           trigger: descRef.current,
           start: 'top 165px',
@@ -110,7 +105,7 @@ function ItemDetail() {
           end: 'bottom bottom',
           pin: descRef.current,
           pinSpacing: false,
-          // markers: true,
+          markers: true,
         })
       }
     }
@@ -130,20 +125,20 @@ function ItemDetail() {
       {!loading ?
         product &&
         <div className='grid md:grid-cols-2'>
-          <div className={`relative md:overflow-hidden`} ref={imgRef}>
-            <div className='relative w-full flex md:block duration-500' style={{ transform: `translateX(calc(100% * ${scrollImgIndex}))` }}>
-              {imagesByColors[colorID].map((img, i) => (
+          <div className={`relative md:overflow-hidden`}>
+            <div ref={imgRef} className='relative w-full flex md:block duration-500' style={{ transform: `translateX(calc(100% * ${scrollImgIndex}))` }}>
+              {product.images[colorIndex].map((img, i) => (
                 <img key={i} src={img} alt="Product" className='md:rounded-md mb-2' />
               ))}
             </div>
-            <HeartIcon className='md:hidden absolute right-2 bottom-5 duration-500 hover:scale-110 cursor-pointer' info={info} active={liked} onClick={() => setLiked(prev => !prev)} />
+            <HeartIcon classname='md:hidden absolute right-2 bottom-5' info={favInfo} />
             <div className='md:hidden absolute flex w-full justify-between p-3 top-[50%] -translate-y-[50%]'>
               {scrollImgIndex !== 0 ?
                 <div className='bg-white rounded-full flex items-center justify-center' onClick={() => setScrollImgIndex((i) => (i + 1))}>
                   <ChevronLeft className='w-5 h-5 cursor-pointer text-gray-400' />
                 </div> : <div></div>
               }
-              {scrollImgIndex !== -imagesByColors[colorID].length + 1 &&
+              {scrollImgIndex !== -product.images[colorIndex].length + 1 &&
                 <div className='bg-white rounded-full flex items-center justify-center' onClick={() => setScrollImgIndex((i) => (i - 1))}>
                   <ChevronRight className='w-5 h-5 cursor-pointer text-gray-400' />
                 </div>
@@ -152,28 +147,28 @@ function ItemDetail() {
           </div>
 
           <div className='w-full'>
-            <div className='pb-8 m-auto w-full px-4 py-1 md:pl-8 md:pr-0 lg:w-[80%] flex flex-col gap-6' ref={descRef}>
+            <div ref={descRef} className='m-auto mb-12 w-full px-4 py-1 md:pl-8 md:pr-0 lg:w-[80%] flex flex-col gap-6'>
               <div>
                 <div className='flex justify-between md:mt-8'>
                   <p>{product.name}</p>
-                  <HeartIcon className='hidden md:block duration-500 hover:scale-110 cursor-pointer' info={info} active={liked} onClick={() => setLiked(prev => !prev)} />
+                  <HeartIcon classname='hidden md:block' info={favInfo} />
                 </div>
-                <p className='font-bold'>€ {product.price}</p>
+                <p className='font-bold'>€ {product.price.toFixed(2)}</p>
               </div>
 
               <div className='flex flex-col gap-1 text-sm'>
-                <p>COLOR:  {product.color.split('/')[colorID]}</p>
+                <p>COLOR:  {product.color[colorIndex]}</p>
                 <div className='flex w-full flex-wrap gap-1'>
-                  {imagesByColors.map((img, i) => (
-                    <img key={i} onClick={() => setColorID(i)} src={img[0]} alt={product.name + '-' + product.color.split('/')[colorID]}
-                      className={`w-20 cursor-pointer md:rounded-sm mb-2 border-2 ${i === colorID ? 'border-black' : 'border-white'}`} />
+                  {product.images.map((img, i) => (
+                    <img key={i} onClick={() => setColorIndex(i)} src={img[0]} alt={product.name + '-' + product.color[colorIndex]}
+                      className={`w-20 cursor-pointer md:rounded-sm mb-2 border-2 ${i === colorIndex ? 'border-black' : 'border-white'}`} />
                   ))}
                 </div>
               </div>
 
-              <SizeSelection product={product} colorID={colorID} stock={stock} sizeID={sizeID} setSizeID={setSizeID} />
+              <SizeSelection product={product} colorIndex={colorIndex} sizeIndex={sizeIndex} setSizeIndex={setSizeIndex} />
 
-              <AddButton id={product.id} sizeID={sizeID} colorID={colorID} stock={stock} />
+              <AddToCartButton product={product} sizeIndex={sizeIndex} colorIndex={colorIndex} setAddtoCart={setAddtoCart} />
 
               <Dropdown title='description'>
                 {product.description}<br />
@@ -185,11 +180,49 @@ function ItemDetail() {
               </Dropdown>
 
               <Dropdown title='delivery and payment'>
-                {product.description}
+                <p>
+                  Orders are typically processed within 1-2 business days and delivered within 3-5 business days.
+                  Tracking information will be provided via email once your order has been shipped.
+                </p>
+                <ul>
+                  <li>
+                    - Standard Shipping: Free for orders over €50
+                  </li>
+                  <li>
+                    - International Shipping: Available, fees vary by destination
+                  </li>
+                  Please ensure your shipping details are correct at checkout to avoid delays.
+                </ul>
+
+                <br />
+                <p>
+                  Payment Methods
+                  We accept the following secure payment options:
+                </p>
+                <ul>
+                  <li>
+                    - Credit/Debit Cards (Visa, MasterCard, AMEX)
+                  </li>
+                  <li>
+                    - PayPal
+                  </li>
+                  <li>
+                    - Apple Pay / Google Pay
+                  </li>
+                  <li>
+                    - Bank Transfer (selected regions only)
+                  </li>
+                </ul>
+                <p>
+                  All transactions are encrypted and protected. You will receive a confirmation email once your payment is successfully processed.
+                  For any questions about payment or shipping, feel free to contact our support team.
+                </p>
               </Dropdown>
 
             </div>
           </div>
+
+          <AddToCartBox product={product} sizeIndex={sizeIndex} colorIndex={colorIndex} addtoCart={addtoCart} />
         </div>
         :
         <div className='grid md:grid-cols-2'>
@@ -238,7 +271,7 @@ function ItemDetail() {
         </div>
       }
 
-      <div className='mt-12'>
+      <div className='mt-0 md: mt-12 relative'>
         <SimilarProducts category={product.category} productIndex={Number(id)} />
       </div>
     </div>

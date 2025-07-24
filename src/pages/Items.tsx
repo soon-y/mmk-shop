@@ -1,20 +1,20 @@
 import { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
-import type { ProductProps, CategoryProps } from '../types'
+import type { ProductSortedProps, CategoryProps, ProductProps } from '../types'
 import { fetchCategory } from "../utils/categoryUtils"
-import { fetchProducts } from '../utils/productUtils'
+import { fetchProducts, sortProductData } from '../utils/productUtils'
 import Filter from '../components/filter'
 import ItemBox from '../components/ItemBox'
 
 function Items() {
   const location = useLocation()
   const [loading, setLoading] = useState<boolean>(true)
-  const [products, setProducts] = useState<ProductProps[]>([])
+  const [products, setProducts] = useState<ProductSortedProps[]>([])
   const [category, setCategory] = useState<CategoryProps[]>([])
   const [urlID, setUrlID] = useState<number | null>(null)
   const [IDgroup, setIDgroup] = useState<number[] | number>([])
-  const [displayProduct, setDisplayProduct] = useState<ProductProps[]>()
-  const [filteredProduct, setFilteredProduct] = useState<ProductProps[]>()
+  const [displayProduct, setDisplayProduct] = useState<ProductSortedProps[]>()
+  const [filteredProduct, setFilteredProduct] = useState<ProductSortedProps[]>()
   const [filterColor, setFilterColor] = useState<string[]>([])
   const [filterSize, setFilterSize] = useState<string[]>([])
   const [filterPriceRange, setFilterPriceRange] = useState<[number, number]>([0, 0])
@@ -30,7 +30,9 @@ function Items() {
     Promise.all([fetchCategory(), fetchProducts()])
       .then(([categoryData, productData]) => {
         setCategory(categoryData)
-        setProducts(productData)
+
+        const sorted = productData.map((el: ProductProps) => { return sortProductData(el) })
+        setProducts(sorted)
       })
       .catch((err) => {
         console.error('Failed to fetch data:', err)

@@ -1,44 +1,42 @@
 import { Minus, Plus } from 'lucide-react'
 import { useEffect, useState } from 'react'
-import { updateCart } from '../../utils/cookieUtils'
+import { updateCookieQnt } from '../../utils/cookiesUtils'
+import type { UserSelectionProps } from '../../types'
+import { useAuth } from '../../context/auth'
+import { updateCartQnt } from '../../utils/userUtils'
 
-function QuantityInput({ index, max, qnt, setQnt, setCartCookie }: {
+function QuantityInput({ index, max, userCart, setUserCart }: {
   index: number,
   max: number,
-  qnt: number[],
-  setQnt: React.Dispatch<React.SetStateAction<number[]>>
-  setCartCookie: React.Dispatch<React.SetStateAction<string[]>>
+  userCart: UserSelectionProps[],
+  setUserCart: React.Dispatch<React.SetStateAction<UserSelectionProps[]>>
 }) {
-  const [value, setValue] = useState(qnt[index])
+  const [value, setValue] = useState(userCart[index].qnt)
+  const { user } = useAuth()
 
   const decrease = () => {
-    if (value > 0) setValue(prev => prev - 1)
+    if (value! > 0) setValue(prev => {
+      if (user) updateCartQnt(user.id, index, prev! - 1)
+      else updateCookieQnt('cart', index, prev! - 1)
+      return prev! - 1
+    })
   }
 
   const increase = () => {
-    if (value < max) setValue(prev => prev + 1)
+    if (value! < max) setValue(prev => {
+      if (user) updateCartQnt(user.id, index, prev! + 1)
+      else updateCookieQnt('cart', index, prev! + 1)
+      return prev! + 1
+    })
   }
 
   useEffect(() => {
-    setQnt((prev) => {
-      const array = [...prev]
-      array[index] = value
-      return array
-    })
-  }, [value])
-
-  useEffect(() => {
-    setValue(qnt[index])
-    
-    setCartCookie(prev => {
+    setUserCart((prev) => {
       const updated = [...prev]
-      const [idPart] = prev[index].split('-')
-      updated[index] = `${idPart}-${qnt[index]}`
-      updateCart(updated[index])
-
+      updated[index].qnt = value
       return updated
     })
-  }, [qnt])
+  }, [value])
 
   return (
     <div className="flex items-center justify-between gap-1 w-[100px] select-none">
