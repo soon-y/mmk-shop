@@ -59,10 +59,10 @@ function Header() {
 
         <div className='flex justify-between items-center inset-0 z-[100] relative'>
           <Logo />
-          <div className='flex items-center gap-4 md:gap-6'>
+          {!groupID && <div className='flex items-center gap-4 md:gap-6'>
             <Searchbar />
-            <UserIcon className='cursor-pointer' onMouseEnter={() => setActiveUser(true)} onMouseLeave={() => setActiveUser(false)} active={activeUser} setClicked={setOpenLogin}/>
-            <HeartIcon className='cursor-pointer' onClick={() => navigate('/favorites')} onMouseEnter={() => setActiveHeart(true)} onMouseLeave={() => setActiveHeart(false)} active={activeHeart} opacity={0} />
+            <UserIcon className='cursor-pointer' onMouseEnter={() => setActiveUser(true)} onMouseLeave={() => setActiveUser(false)} active={activeUser} setClicked={setOpenLogin} />
+            <HeartIcon onClick={() => navigate('/favorites')} onMouseEnter={() => setActiveHeart(true)} onMouseLeave={() => setActiveHeart(false)} activeInit={activeHeart} />
             <CartIcon className='cursor-pointer' onMouseEnter={() => setActiveCart(true)} onMouseLeave={() => setActiveCart(false)} active={activeCart} />
             {!clicked ?
               <MenuIcon className='cursor-pointer md:hidden' onMouseEnter={() => setActiveMenu(true)} onMouseLeave={() => setActiveMenu(false)} active={activeMenu}
@@ -72,7 +72,7 @@ function Header() {
                 }} /> :
               <X className='button md:hidden' onClick={() => setClicked(false)} />
             }
-          </div>
+          </div>}
         </div>
 
         <div className="hidden group z-50 md:inline-block" onMouseLeave={() => { if (windowWidth > 767) setGroupID(null) }}>
@@ -89,7 +89,7 @@ function Header() {
 
       </div>
 
-      {openLogin && <LoginPopup setClicked={setOpenLogin}/>}
+      {openLogin && <LoginPopup setClicked={setOpenLogin} />}
     </>
   )
 }

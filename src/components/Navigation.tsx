@@ -27,9 +27,11 @@ function Navigation({ groupID, mobile, setGroupID, setClicked, setNavWidth, setC
     const id = query.get('group')
     if (id) setID(id)
     else {
-  setID(null)
-  setGroupID?.(null)
-}
+      setID(null)
+      setGroupID?.(null)
+    }
+
+    window.scrollTo(0, 0)
   }, [location])
 
   useEffect(() => {
