@@ -2,6 +2,8 @@ import { createContext, useContext, useEffect, useState, type ReactNode } from '
 import axios, { type AxiosResponse } from 'axios'
 import { fetchCustomer } from '../utils/profileUtils'
 import type { UserProps } from '../types'
+import { deleteCookie, getCookie } from '../utils/cookiesUtils'
+import { getCookiesProducts } from '../utils/productUtils'
 
 interface AuthContextType {
   user: UserProps | null
@@ -11,16 +13,18 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<AxiosResponse | 'unauthorized' | null>
   refreshUser: () => Promise<void>
   logout: () => void
+  syncLocalData: (user: UserProps) => Promise<void>
 }
 
 const AuthContext = createContext<AuthContextType>({
   user: null,
   isAuthenticated: false,
   loading: true,
-  setUser: () => {},
+  setUser: () => { },
   login: async () => null,
-  refreshUser: async () => {},
-  logout: () => {}
+  refreshUser: async () => { },
+  logout: () => { },
+  syncLocalData: async () => { },
 })
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
@@ -59,11 +63,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const login = async (email: string, password: string): Promise<AxiosResponse | 'unauthorized' | null> => {
     try {
-      const res = await axios.post('http://localhost:3000/auth/loginCustomer', { email, password })
+      const res = await axios.post('https://mmk-backend.onrender.com/auth/loginCustomer', { email, password })
 
       if (res.status === 200 || res.status === 201) {
         localStorage.setItem('MMKtoken', res.data.access_token)
         await refreshUser()
+
+        const result = await fetchCustomer()
+        if (result !== false) {
+          syncLocalData(result.data)
+        }
         return res
       }
 
@@ -87,9 +96,65 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setIsAuthenticated(false)
   }
 
+  const syncLocalData = async (user: UserProps) => {
+    const favorites = getCookie('favorites')
+    const cart = getCookie('cart')
+    const id = user.id
+
+    if (!id) {
+      console.error("No user ID found!")
+      return
+    }
+
+    if (favorites && favorites.length) {
+      try {
+        const cookieFavorites = await getCookiesProducts('favorites')
+
+        if (cookieFavorites?.cookiesItem.length) {
+          await axios.post('https://mmk-backend.onrender.com/favorites/drop', { user: id })
+
+          for (const item of cookieFavorites.cookiesItem) {
+            await axios.post('https://mmk-backend.onrender.com/favorites/add', {
+              user: id,
+              product: item
+            })
+          }
+        }
+
+        window.location.reload()
+      } catch (err) {
+        console.error("Failed to sync favorites:", err)
+      }
+    }
+
+    if (cart && cart.length) {
+      try {
+        const cookieCart = await getCookiesProducts('cart')
+
+        if (cookieCart?.cookiesItem.length) {
+          await axios.post('https://mmk-backend.onrender.com/cart/drop', { user: id })
+
+          for (const item of cookieCart.cookiesItem) {
+            await axios.post('https://mmk-backend.onrender.com/cart/add', {
+              user: id,
+              product: item
+            })
+          }
+        }
+
+        window.location.reload()
+      } catch (err) {
+        console.error("Failed to sync cart:", err)
+      }
+    }
+
+    deleteCookie('favorites')
+    deleteCookie('cart')
+  }
+
   return (
     <AuthContext.Provider
-      value={{ user, setUser, isAuthenticated, loading, login, logout, refreshUser }}
+      value={{ user, setUser, isAuthenticated, loading, login, logout, refreshUser, syncLocalData }}
     >
       {children}
     </AuthContext.Provider>
