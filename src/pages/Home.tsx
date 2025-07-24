@@ -48,14 +48,18 @@ function Home() {
       <div className='banner bg-red-500 absolute top-[200px]'></div>
       <div>
         {category.map((el, i) => (
-          <div key={i}
-            className='flex items-center justify-center bg-no-repeat bg-contain bg-bottom m-auto w-full md:w-[500px] h-[30vh] font-bold text-2xl cursor-pointer'
+          <div
+            key={i}
+            className="group duration-500 flex items-center justify-center bg-no-repeat bg-contain bg-bottom m-auto w-full md:w-[500px] h-[30vh] font-bold text-2xl cursor-pointer md:grayscale hover:grayscale-0 transition-all"
             style={{ backgroundImage: el.image ? `url(${el.image})` : '' }}
             onClick={() => navigate(`/shopping/product?group=${el.name}&id=${el.id}`)}
           >
-            <p className='inline-block text-center my-4 px-2 bg-magenta text-white'>{el.name}</p>
+            <p className="inline-block text-center my-4 px-2 text-black bg-white/70 rounded group-hover:bg-magenta group-hover:text-white">
+              {el.name}
+            </p>
           </div>
         ))}
+
       </div>
     </div>
   )
