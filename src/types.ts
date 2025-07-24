@@ -21,13 +21,13 @@ export type ProductResultProps = {
   category: string
   price: number
   stock: number[][]
-  images: string[]
+  images: string[][]
   description: string
   material: string
-  size: string
-  color: string
-  colorHex: string
-  imagesCount: string
+  size: string[]
+  color: string[]
+  colorHex: string[]
+  imagesCount: number[]
   measurement: string
 }
 
@@ -41,6 +41,23 @@ export type ProductDisplayProps = {
   size: string
   color: string
   colorHex: string
+  created_at: string
+}
+
+export type ProductSortedProps = {
+  id: number
+  name: string
+  category: number
+  price: number
+  stock: number[][]
+  images: string[][]
+  description: string
+  material: string
+  size: string[]
+  color: string[]
+  colorHex: string[]
+  imagesCount: number[]
+  measurement: string
 }
 
 export type CategoryProps = {
@@ -78,4 +95,11 @@ export type BannerProps = {
   order: number
   buttonName: string
   buttonLink: string
+}
+
+export type UserSelectionProps = {
+  id: number
+  size: number
+  color: number
+  qnt?: number
 }
