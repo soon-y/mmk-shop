@@ -4,8 +4,8 @@ import RightSidePanel from './RightSidePanel'
 import SearchIcon from '../asset/SearchIcon'
 import Input from './ui/input'
 import { fetchCategory } from '../utils/categoryUtils'
-import { fetchProducts, grouppingStock } from '../utils/productUtils'
-import type { CategoryProps, ProductProps, ProductResultProps } from '../types'
+import { fetchProducts, sortProductData } from '../utils/productUtils'
+import type { CategoryProps, ProductProps, ProductResultProps, ProductSortedProps } from '../types'
 import ResultBox from './ResultBox'
 
 function Searchbar() {
@@ -22,15 +22,15 @@ function Searchbar() {
         const productArray: ProductResultProps[] = []
 
         productData.forEach((el: ProductProps) => {
+          const sortedProduct: ProductSortedProps = sortProductData(el)
           const matchedCategory = categoryData.find((cat: CategoryProps) => cat.id === el.category)
           const matchedCategoryGroup = categoryData.find((cat: CategoryProps) => cat.id === matchedCategory.groupID)
           const categoryName = matchedCategory.name
           const categoryGroupName = matchedCategoryGroup.name
           const productWithCategory = {
-            ...el,
+            ...sortedProduct,
             category: categoryName,
             categoryGroup: categoryGroupName,
-            stock: grouppingStock(el.stock)
           }
           productArray.push(productWithCategory)
         })
@@ -43,37 +43,45 @@ function Searchbar() {
   }, [])
 
   useEffect(() => {
-    const keyword = search.toLowerCase()
+    const keywords = search.toLowerCase().split(' ').filter(Boolean)
+
+    if (keywords.length === 0) {
+      setResult([])
+      return
+    }
 
     const matchedProducts = products.filter(product => {
-      let matchFound = false
+      const searchableValues: string[] = []
 
-      for (const [key, value] of Object.entries(product)) {
-        if (typeof value === 'string' && value.toLowerCase().includes(keyword)) {
-          matchFound = true
-
-          if (key === 'color' && typeof value === 'string') {
-            const colorArray = value.toLowerCase().split('/')
-            const index = colorArray.findIndex(color => color.includes(keyword.toLowerCase()))
-            if (index !== -1) {
-              setColor(colorArray[index])
+      for (const value of Object.values(product)) {
+        if (typeof value === 'string') {
+          searchableValues.push(value.toLowerCase())
+        } else if (Array.isArray(value)) {
+          value.forEach(item => {
+            if (typeof item === 'string') {
+              searchableValues.push(item.toLowerCase())
             }
-          } else {
-            setColor('')
-          }
-          break
+          })
         }
       }
 
-      return matchFound
+      const matchedAll = keywords.every(keyword =>
+        searchableValues.some(value => value.includes(keyword))
+      )
+
+      if (matchedAll) {
+        const colorMatch = product.color?.find(c =>
+          keywords.includes(c.toLowerCase())
+        )
+        setColor(colorMatch ?? '')
+      }
+
+      return matchedAll
     })
 
-    if (keyword === '') {
-      setResult([])
-    } else {
-      setResult(matchedProducts)
-    }
+    setResult(matchedProducts)
   }, [search, products])
+
 
   return (
     <>
