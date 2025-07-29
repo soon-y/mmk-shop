@@ -17,7 +17,7 @@ function Popup({ children, title, setClicked }: {
             <p className='font-bold uppercase mb-2'>{title}</p>
             <X className='cursor-pointer' onClick={() => setClicked(false)} />
           </div>
-          <div className={` ${windowWidth <= 350 ? 'h-[calc(100vh-80px)]' : ''}`}>
+          <div className={` ${windowWidth <= 350 ? 'h-[calc(100vh-80px)] flex flex-col justify-between' : ''}`}>
             {children}
           </div>
         </div>
