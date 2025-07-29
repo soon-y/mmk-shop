@@ -122,3 +122,7 @@ export const getUserProducts = async (name: string, user: string): Promise<{
 
   return { userItem, filtered }
 }
+
+export const urlGenerator = (categoryName: string, productId: number, colorIndex: number ) => {
+  return `/products/item?group=${categoryName}&id=${productId}&color=${colorIndex}`
+}
