@@ -1,16 +1,16 @@
 import React, { useState } from 'react'
 import { Plus, Minus } from 'lucide-react'
 
-const Dropdown = ({ title, children }: { title: string, children: React.ReactNode }) => {
+const Dropdown = ({ title, children, classname }: { title: string, children: React.ReactNode, classname?: string }) => {
   const [open, setOpen] = useState<boolean>(false)
 
   return (
     <div>
-      <div className='cursor-pointer uppercase flex justify-between font-semibold text-gray-400 text-sm' onClick={() => setOpen((prev) => (!prev))}>
+      <div className={`cursor-pointer uppercase flex justify-between font-semibold ${classname ? classname : 'text-gray-500 text-sm' }`} onClick={() => setOpen((prev) => (!prev))}>
         {title}
         {!open ?
-          <Plus className='w-4' /> :
-          <Minus className='w-4' />
+          <Plus className='w-5 text-gray-500 hover:text-black' /> :
+          <Minus className='w-5 text-gray-500 hover:text-black' />
         }
       </div>
 
