@@ -81,10 +81,24 @@ export type UserProps = {
   id: string
   created_at: string
   email: string
-  password: string
+  firstName: string
+  lastName: string
+  contact: string
+  payment: string | null
+}
+
+export type AddrProps = {
+  id: string
+  index: number
   firstName: string
   lastName: string
   address: string
+  contact: string
+  street: string
+  postalCode: string
+  city: string
+  country: string
+  select: boolean
 }
 
 export type BannerProps = {
@@ -102,4 +116,71 @@ export type UserSelectionProps = {
   size: number
   color: number
   qnt?: number
+}
+
+export type OrderProps = {
+  orderId?: string
+  userId: string
+  status: string
+  totalAmount: number
+  discount: number
+  paidAmount: number
+  paymentMethod: string
+  paymentStatus: string
+  shippingFee: number
+  transactionId: string
+  shippingAddr: string
+  billingAddr: string
+  shippingName: string
+  billingName: string
+  shippingContact: string
+  billingContact: string
+  created_at?: string
+}
+
+export type OrderedProductProps = {
+  orderId?: string
+  productId: number
+  size: string
+  color: string
+  quantity: number
+  total: number
+}
+
+export type SortedOrderProps = {
+  orderId?: string
+  userId: string
+  status: string
+  totalAmount: number
+  discount: number
+  paidAmount: number
+  paymentMethod: string
+  paymentStatus: string
+  shippingFee: number
+  transactionId: string
+  shippingAddr: string
+  billingAddr: string
+  shippingName: string
+  billingName: string
+  shippingContact: string
+  billingContact: string
+  created_at?: string
+  products: SortedOrderProductProps[]
+  dateProcessingCompleted?: string,
+  dateShipped?: string,
+  dateDelivered?: string,
+}
+
+export type SortedOrderProductProps = {
+  id: number
+  name: string
+  price: number
+  color: string
+  colorIndex: number
+  size: string
+  image: string
+  category: string
+  categoryGroup: string
+  qnt: number
+  total: number
 }
