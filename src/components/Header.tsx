@@ -3,9 +3,9 @@ import { X } from 'lucide-react'
 import Searchbar from './Searchbar'
 import LeftSidePanel from './LeftSidePanel'
 import RightSidePanel from './RightSidePanel'
-import SubCategory from './SubCategoy'
-import Navigation from './Navigation'
-import CategoryImg from './CategoryImg'
+import SubCategory from './category/SubCategoy'
+import Navigation from './category/Navigation'
+import CategoryImg from './category/CategoryImg'
 import { useWindowSize } from '../utils/window'
 import HeartIcon from '../asset/HeartIcon'
 import UserIcon from '../asset/UserIcon'
@@ -16,6 +16,7 @@ import type { CategoryProps } from '../types'
 import Logo from './ui/logo'
 import { useNavigate } from 'react-router-dom'
 import LoginPopup from './LoginPopup'
+import { useLocation } from 'react-router-dom'
 
 function Header() {
   const [category, setCategory] = useState<CategoryProps[]>([])
@@ -30,6 +31,7 @@ function Header() {
   const [categoryID, setCategoryID] = useState<number>(0)
   const { windowWidth } = useWindowSize()
   const navigate = useNavigate()
+  const pathname = useLocation().pathname
 
   useEffect(() => {
     if (clicked === false && windowWidth > 767) {
@@ -45,7 +47,8 @@ function Header() {
 
   return (
     <>
-      <div id='header' className={`p-4 md:p-6 md:pb-4 z-[100] fixed top-0 w-full bg-white `}>
+      {!pathname.includes('checkout') &&
+        <div id='header' className={`p-4 md:p-6 md:pb-4 z-[100] fixed top-0 w-full bg-white `}>
         <RightSidePanel groupID={groupID!!} groupName={category.find((el) => el.id === groupID)?.name} clicked={clicked} setClicked={setClicked} classname='md:hidden' >
           <div className='p-4 h-full'>
             <Navigation setGroupID={setGroupID} groupID={groupID} setClicked={setClicked} mobile={true} setCategoryID={setCategoryID} />
@@ -59,7 +62,7 @@ function Header() {
 
         <div className='flex justify-between items-center inset-0 z-[100] relative'>
           <Logo />
-          {!groupID && <div className='flex items-center gap-4 md:gap-6'>
+          {!groupID && <div className='flex gap-4 md:gap-6'>
             <Searchbar />
             <UserIcon className='cursor-pointer' onMouseEnter={() => setActiveUser(true)} onMouseLeave={() => setActiveUser(false)} active={activeUser} setClicked={setOpenLogin} />
             <HeartIcon onClick={() => navigate('/favorites')} onMouseEnter={() => setActiveHeart(true)} onMouseLeave={() => setActiveHeart(false)} activeInit={activeHeart} />
@@ -86,8 +89,8 @@ function Header() {
             <CategoryImg categoryID={categoryID} navWidth={navWidth} />
           </LeftSidePanel>
         </div>
-
       </div>
+      }
 
       {openLogin && <LoginPopup setClicked={setOpenLogin} />}
     </>
