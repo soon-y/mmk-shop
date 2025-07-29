@@ -29,6 +29,14 @@ h1 {
   font-size: 40px;
   font-family: "Abril Fatface", serif;
   font-weight: 700;
+  line-height: 0.9;
+  margin-bottom: 20px;
+}
+
+h3 {
+  font-size: 18px;
+  font-weight: 700;
+  text-transform: uppercase;
 }
 
 input:focus {
@@ -67,12 +75,26 @@ button:focus-visible {
   min-width: 100vw;
   min-height: 100vh;
   padding-top: 155px;
-  overflow-y: auto;
   background-color: white;
 }
 
+.containerWoHeight {
+  position: relative;
+  min-width: 100vw;
+  padding-top: 155px;
+  background-color: white;
+}
+
+ul {
+  list-style-type: disc;
+  padding-left: 1.25rem;
+  /* or 20px */
+}
+
 @media (max-width: 768px) {
-  html, body {
+
+  html,
+  body {
     scrollbar-width: none;
     -ms-overflow-style: none;
   }
@@ -85,6 +107,15 @@ button:focus-visible {
   .container {
     padding-top: 90px;
   }
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
 @media (prefers-color-scheme: light) {
