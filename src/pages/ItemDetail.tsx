@@ -1,29 +1,21 @@
-import { useEffect, useState, useRef, useLayoutEffect } from 'react'
+import { useEffect, useState } from 'react'
 import type { ProductSortedProps } from '../types'
 import HeartIcon from '../asset/HeartIcon'
 import { fetchProductAndSortData } from '../utils/productUtils'
 import Button from '../components/ui/button'
 import Dropdown from '../components/ui/dropdown'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
-import { isTouchDevice, useWindowSize } from '../utils/window'
-import gsap from 'gsap'
-import { ScrollTrigger } from "gsap/ScrollTrigger"
+import { useWindowSize } from '../utils/window'
 import SimilarProducts from '../components/SimilarProducts'
 import { useLocation } from 'react-router-dom'
 import { saveHistory } from '../utils/cookiesUtils'
 import SizeSelection from '../components/SizeSelection'
 import AddToCartButton from '../components/AddToCartButton'
 import { useAuth } from '../context/auth'
-import AddToCartBox from '../components/AddToCartBox'
-import { useGSAP } from '@gsap/react'
-
-gsap.registerPlugin(ScrollTrigger)
+import AddToCartBox from '../components/box/AddToCartBox'
 
 function ItemDetail() {
   const location = useLocation()
-  const scrollTriggerRef = useRef<ScrollTrigger | null>(null)
-  const descRef = useRef<HTMLDivElement>(null)
-  const imgRef = useRef<HTMLDivElement>(null)
   const [loading, setLoading] = useState<boolean>(true)
   const [product, setProduct] = useState<ProductSortedProps | null>()
   const [colorIndex, setColorIndex] = useState<number>(0)
@@ -33,7 +25,6 @@ function ItemDetail() {
   const [id, setID] = useState<number | undefined>()
   const skeletonStyle = 'rounded-md bg-gray-100 animate-pulse text-gray-200'
   const { windowWidth } = useWindowSize()
-  const touchDevice = isTouchDevice()
   const { user } = useAuth()
   const [addtoCart, setAddtoCart] = useState<boolean>(false)
 
@@ -76,78 +67,33 @@ function ItemDetail() {
     if (windowWidth < 768) setScrollImgIndex(0)
   }, [windowWidth])
 
-  useGSAP(() => {
-    const desc = descRef.current
-
-    if (!desc) {
-      const observer = new MutationObserver(() => {
-        if (descRef.current) {
-          observer.disconnect()
-          initScrollTrigger()
-        }
-      })
-      observer.observe(document.body, { childList: true, subtree: true })
-      return () => observer.disconnect()
-    }
-
-    initScrollTrigger()
-
-    function initScrollTrigger() {
-      if (scrollTriggerRef.current) {
-        scrollTriggerRef.current.kill()
-      }
-
-      if (window.innerWidth >= 768 && !touchDevice && descRef.current) {
-        scrollTriggerRef.current = ScrollTrigger.create({
-          trigger: descRef.current,
-          start: 'top 165px',
-          endTrigger: imgRef.current,
-          end: 'bottom bottom',
-          pin: descRef.current,
-          pinSpacing: false,
-          markers: true,
-        })
-      }
-    }
-
-    return () => {
-      if (scrollTriggerRef.current) {
-        scrollTriggerRef.current.kill()
-        scrollTriggerRef.current = null
-      }
-    }
-  }, [windowWidth, touchDevice])
-
   if (!product) return
 
   return (
     <div className='container md:px-6' id='top'>
       {!loading ?
         product &&
-        <div className='grid md:grid-cols-2'>
-          <div className={`relative md:overflow-hidden`}>
-            <div ref={imgRef} className='relative w-full flex md:block duration-500' style={{ transform: `translateX(calc(100% * ${scrollImgIndex}))` }}>
+        <div className='grid md:grid-cols-2 '>
+          <div className={`relative`}>
+            <div className='relative w-full flex md:block duration-500' style={{ transform: `translateX(calc(100% * ${scrollImgIndex}))` }}>
               {product.images[colorIndex].map((img, i) => (
                 <img key={i} src={img} alt="Product" className='md:rounded-md mb-2' />
               ))}
             </div>
             <HeartIcon classname='md:hidden absolute right-2 bottom-5' info={favInfo} />
-            <div className='md:hidden absolute flex w-full justify-between p-3 top-[50%] -translate-y-[50%]'>
+            <div className='md:hidden absolute flex w-full justify-between top-[50%] -translate-y-[50%]'>
               {scrollImgIndex !== 0 ?
-                <div className='bg-white rounded-full flex items-center justify-center' onClick={() => setScrollImgIndex((i) => (i + 1))}>
-                  <ChevronLeft className='w-5 h-5 cursor-pointer text-gray-400' />
-                </div> : <div></div>
+                <ChevronLeft className='mix-blend-difference p-2 w-10 h-10 cursor-pointer text-black' onClick={() => setScrollImgIndex((i) => (i + 1))} />
+                : <div></div>
               }
               {scrollImgIndex !== -product.images[colorIndex].length + 1 &&
-                <div className='bg-white rounded-full flex items-center justify-center' onClick={() => setScrollImgIndex((i) => (i - 1))}>
-                  <ChevronRight className='w-5 h-5 cursor-pointer text-gray-400' />
-                </div>
+                <ChevronRight className='mix-blend-difference p-2 w-10 h-10 cursor-pointer text-black' onClick={() => setScrollImgIndex((i) => (i - 1))} />
               }
             </div>
           </div>
 
-          <div className='w-full'>
-            <div ref={descRef} className='m-auto mb-12 w-full px-4 py-1 md:pl-8 md:pr-0 lg:w-[80%] flex flex-col gap-6'>
+          <div className="self-start sticky top-[160px] h-fit">
+            <div className='m-auto w-full px-4 py-1 md:pl-8 md:pr-0 lg:w-[80%] flex flex-col gap-6'>
               <div>
                 <div className='flex justify-between md:mt-8'>
                   <p>{product.name}</p>
@@ -201,7 +147,7 @@ function ItemDetail() {
                 </p>
                 <ul>
                   <li>
-                    - Credit/Debit Cards (Visa, MasterCard, AMEX)
+                    - Credit/Debit Cards (Visa, MasterCard)
                   </li>
                   <li>
                     - PayPal
@@ -218,7 +164,6 @@ function ItemDetail() {
                   For any questions about payment or shipping, feel free to contact our support team.
                 </p>
               </Dropdown>
-
             </div>
           </div>
 
