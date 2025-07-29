@@ -1,8 +1,9 @@
-import { type ReactNode } from 'react'
+import { useEffect, type ReactNode } from 'react'
 import { X } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 
-function RightSidePanel({ children, clicked, setClicked, groupID, groupName, classname = '' }: {
+function RightSidePanel({ title, children, clicked, setClicked, groupID, groupName, classname = '' }: {
+  title?: string,
   children: ReactNode,
   groupID?: number
   groupName?: string
@@ -18,8 +19,9 @@ function RightSidePanel({ children, clicked, setClicked, groupID, groupName, cla
       {clicked && <div className='fixed inset-0 bg-black opacity-70' onClick={() => setClicked(false)}></div>}
 
       <div className={`fixed top-0 right-0 h-full w-full md:w-[500px] bg-white transform transition-transform duration-500  ${clicked ? 'translate-x-0' : 'translate-x-full'}`}>
-        <div className='flex flex-col items-end'>
-          <X className='button mt-4 mr-4' onClick={() => {
+        <div className='flex justify-between mt-4'>
+          <p className='ml-6 mt-1 uppercase font-semibold'>{title}</p>
+          <X className='button mr-4' onClick={() => {
             setClicked(false)
             if (groupID && groupName) navigate(`/shopping/product?group=${(groupName).toLocaleLowerCase()}&id=${groupID}`)
           }} />
