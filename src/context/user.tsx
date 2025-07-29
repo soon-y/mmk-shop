@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
 import axios, { type AxiosResponse } from 'axios'
-import { fetchUser, fetchBillingAddr, fetchCustomer } from '../utils/profileUtils'
+import { fetchAddress, fetchBillingAddr, fetchCustomer } from '../utils/profileUtils'
 import type { AddrProps, UserProps } from '../types'
 import { deleteCookie, getCookie } from '../utils/cookiesUtils'
 import { getCookiesProducts } from '../utils/productUtils'
@@ -66,7 +66,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
         setIsUserenticated(true)
         setUser(result.data)
 
-        const addr = await fetchUser(result.data.id)
+        const addr = await fetchAddress(result.data.id)
         if (addr && (addr.status === 200 || addr.status === 201)) {
           setAddr(addr.data)
         }
