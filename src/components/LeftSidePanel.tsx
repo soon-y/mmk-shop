@@ -1,5 +1,5 @@
 import { type ReactNode } from 'react'
-import Navigation from './Navigation'
+import Navigation from './category/Navigation'
 
 function LeftSidePanel({ children, width }: { children: ReactNode, width: number | null }) {
 
