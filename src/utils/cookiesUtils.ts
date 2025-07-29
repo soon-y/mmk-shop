@@ -130,6 +130,18 @@ export function getQntFromCartCookie(product: UserSelectionProps) {
   }
 }
 
+export function getTotalQntFromCartCookie() {
+  const cartRaw = getCookie('cart')
+  const cart: UserSelectionProps[] = cartRaw ? JSON.parse(cartRaw) : []
+  let total: number = 0
+
+  cart.forEach((el)=>{
+    total = total + el.qnt! 
+  })
+
+  return total
+}
+
 export function deleteCookie(name: string) {
   document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
 }
