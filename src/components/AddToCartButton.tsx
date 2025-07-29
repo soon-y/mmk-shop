@@ -1,9 +1,7 @@
 import type { ProductSortedProps } from '../types'
-import { removeCookie, saveCookie } from '../utils/cookiesUtils'
 import Button from './ui/button'
-import { useAuth } from '../context/auth'
-import { useLocation } from 'react-router-dom'
-import { addUserSelection, deleteUserSelection } from '../utils/userUtils'
+import { useCart } from '../context/cart'
+import { useFavorites } from '../context/favorites'
 
 function AddToCartButton({ product, sizeIndex, colorIndex, setAddtoCart, setClicked }: {
   product: ProductSortedProps,
@@ -12,25 +10,22 @@ function AddToCartButton({ product, sizeIndex, colorIndex, setAddtoCart, setClic
   setAddtoCart: React.Dispatch<React.SetStateAction<boolean>>
   setClicked?: React.Dispatch<React.SetStateAction<boolean>>
 }) {
-  const { user } = useAuth()
-  const pathname = useLocation().pathname
+  const { addProduct } = useCart()
+  const { loadFavorites } = useFavorites()
 
-  const addtoCart = () => {
-    if (user) {
-      addUserSelection('cart', user.id, { id: product.id, size: sizeIndex!, color: colorIndex, qnt: 1 })
-      deleteUserSelection('favorites', user.id, { id: product.id, size: 0, color: colorIndex })
-    } else {
-      saveCookie('cart', { id: product.id, size: sizeIndex!, color: colorIndex, qnt: 1 })
-      removeCookie('favorites', { id: product.id, size: 0, color: colorIndex })
-    }
-
-    setAddtoCart(true)
+  const addtoCart = async () => {
+    addProduct(product.id, sizeIndex!, colorIndex)
     setClicked?.(false)
 
     setTimeout(() => {
-      setAddtoCart(false)
-      if (pathname.includes('favorites')) window.location.reload()
-    }, 1500)
+      setAddtoCart(true)
+      setTimeout(() => {
+        setTimeout(() => {
+          setAddtoCart(false)
+          loadFavorites()
+        }, 1500)
+      }, 100)
+    }, 100)
   }
 
   return (
