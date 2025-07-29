@@ -6,12 +6,12 @@ import Input from './ui/input'
 import { fetchCategory } from '../utils/categoryUtils'
 import { fetchProducts, sortProductData } from '../utils/productUtils'
 import type { CategoryProps, ProductProps, ProductResultProps, ProductSortedProps } from '../types'
-import ResultBox from './ResultBox'
+import ResultBox from './box/ResultBox'
 
 function Searchbar() {
   const [clicked, setClicked] = useState<boolean>(false)
   const [active, setActive] = useState<boolean>(false)
-  const [search, setSearch] = useState('')
+  const [search, setSearch] = useState<string | undefined>('')
   const [products, setProducts] = useState<ProductResultProps[]>([])
   const [result, setResult] = useState<ProductResultProps[]>([])
   const [color, setColor] = useState<string>('')
