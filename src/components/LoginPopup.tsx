@@ -9,12 +9,12 @@ import { useAuth } from '../context/auth'
 function LoginPopup({ setClicked }: {
   setClicked: React.Dispatch<React.SetStateAction<boolean>>
 }) {
-  const [email, setEmail] = useState<string>('')
-  const [firstName, setFirstName] = useState<string>('')
-  const [lastName, setLastName] = useState<string>('')
+  const [email, setEmail] = useState<string | undefined>('')
+  const [firstName, setFirstName] = useState<string | undefined>('')
+  const [lastName, setLastName] = useState<string | undefined>('')
   const [validEmail, setValidEmail] = useState<boolean>(true)
   const [validName, setValidName] = useState<boolean>(true)
-  const [password, setPassword] = useState<string>('')
+  const [password, setPassword] = useState<string | undefined>('')
   const [passwordGuid, setPasswordGuid] = useState<ReactNode[]>()
   const [validPassword, setValidPassword] = useState<boolean>(true)
   const [registered, setRegistered] = useState<boolean | null>(null)
@@ -23,7 +23,7 @@ function LoginPopup({ setClicked }: {
   const { login } = useAuth()
 
   useEffect(() => {
-    if (email !== '' && !email.includes('@')) setValidEmail(false)
+    if (email !== '' && !email!.includes('@')) setValidEmail(false)
     else setValidEmail(true)
   }, [email])
 
@@ -35,11 +35,11 @@ function LoginPopup({ setClicked }: {
   useEffect(() => {
     const msg: ReactNode[] = []
 
-    const hasLowercase = /[a-z]/.test(password)
-    const hasUppercase = /[A-Z]/.test(password)
-    const hasNumber = /[0-9]/.test(password)
-    const isProperLength = password.length >= 8 && password.length < 26
-    const hasNoSpaces = !/\s/.test(password)
+    const hasLowercase = /[a-z]/.test(password!)
+    const hasUppercase = /[A-Z]/.test(password!)
+    const hasNumber = /[0-9]/.test(password!)
+    const isProperLength = password!.length >= 8 && password!.length < 26
+    const hasNoSpaces = !/\s/.test(password!)
 
     if (hasLowercase) msg.push(<p className='flex items-center text-green-600'><Check className='w-4 mr-1' /> 1 lowercase letter</p>)
     else msg.push(<p className='flex items-center text-red-500'><CircleAlert className='w-4 mr-1' /> 1 lowercase letter</p>)
@@ -67,7 +67,7 @@ function LoginPopup({ setClicked }: {
 
   const checkCustomerRegisterd = async () => {
     setLoading(true)
-    findCustomerByEmail(email).then((res) => {
+    findCustomerByEmail(email!).then((res) => {
       setRegistered(res)
       setLoading(false)
     })
@@ -75,7 +75,7 @@ function LoginPopup({ setClicked }: {
 
   const registerCustomer = async () => {
     setLoading(true)
-    register(email, password, firstName, lastName).then((res) => {
+    register(email!, password!, firstName!, lastName!).then((res) => {
       if (res) {
         setRegistered(true)
         setLoading(false)
@@ -85,7 +85,7 @@ function LoginPopup({ setClicked }: {
 
   const loginCustomer = async () => {
     setLoading(true)
-    login(email, password).then((res) => {
+    login(email!, password!).then((res) => {
       if (res === 'unauthorized') {
         setUnauthorized(true)
         setLoading(false)
@@ -113,7 +113,7 @@ function LoginPopup({ setClicked }: {
             Enter your email address to register as an member or to log in to your account.
             <div>
               <p className='text-sm m-1'>Email <span className='text-red-500'>*</span></p>
-              <Input type='email' setInputVal={setEmail} placeholder='e-mail'>
+              <Input required type='email' setInputVal={setEmail} placeholder='e-mail'>
                 <User className='w-5 mx-2 text-gray-400' />
               </Input>
               {!validEmail && <p className='text-red-500 text-sm'>Please enter a validEmail email address.</p>}
@@ -136,14 +136,14 @@ function LoginPopup({ setClicked }: {
           >
             <div>
               <p className='text-sm ml-1 text-gray-500'>Email <span className='text-red-500'>*</span></p>
-              <Input type='email' setInputVal={setEmail} readOnly={true} initial={email}>
+              <Input required type='email' setInputVal={setEmail} readOnly={true} initial={email}>
                 <User className='w-5 mx-2 text-gray-400' />
               </Input>
             </div>
 
             <div>
               <p className='text-sm ml-1 text-gray-500'>Password <span className='text-red-500'>*</span></p>
-              <Input type='password' setInputVal={setPassword}>
+              <Input required type='password' setInputVal={setPassword}>
                 <RectangleEllipsis className='w-5 mx-2 text-gray-400' />
               </Input>
               <div className='my-1 flex flex-wrap gap-x-2 gap-y-0'>
@@ -155,12 +155,12 @@ function LoginPopup({ setClicked }: {
 
             <div className='mb-6'>
               <p className='text-sm ml-1 text-gray-500'>First Name <span className='text-red-500'>*</span></p>
-              <Input setInputVal={setFirstName}>
+              <Input required setInputVal={setFirstName}>
                 <User className='w-5 mx-2 text-gray-400' />
               </Input>
 
               <p className='mt-2 text-sm ml-1 text-gray-500'>Last Name <span className='text-red-500'>*</span></p>
-              <Input setInputVal={setLastName}>
+              <Input required setInputVal={setLastName}>
                 <User className='w-5 mx-2 text-gray-400' />
               </Input>
             </div>
@@ -188,7 +188,7 @@ function LoginPopup({ setClicked }: {
               <p className='text-sm ml-1 text-gray-500'>
                 Email <span className='text-red-500'>*</span>
               </p>
-              <Input type='email' setInputVal={setEmail} readOnly={true} initial={email}>
+              <Input required type='email' setInputVal={setEmail} readOnly={true} initial={email}>
                 <User className='w-5 mx-2 text-gray-400' />
               </Input>
             </div>
@@ -197,7 +197,7 @@ function LoginPopup({ setClicked }: {
               <p className='text-sm ml-1 text-gray-500'>
                 Password <span className='text-red-500'>*</span>
               </p>
-              <Input type='password' setInputVal={setPassword}>
+              <Input required type='password' setInputVal={setPassword}>
                 <RectangleEllipsis className='w-5 mx-2 text-gray-400' />
               </Input>
               {unauthorized && (
