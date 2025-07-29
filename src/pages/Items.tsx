@@ -4,7 +4,7 @@ import type { ProductSortedProps, CategoryProps, ProductProps } from '../types'
 import { fetchCategory } from "../utils/categoryUtils"
 import { fetchProducts, sortProductData } from '../utils/productUtils'
 import Filter from '../components/filter'
-import ItemBox from '../components/ItemBox'
+import ItemBox from '../components/box/ItemBox'
 
 function Items() {
   const location = useLocation()
