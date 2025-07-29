@@ -43,7 +43,7 @@ function Searchbar() {
   }, [])
 
   useEffect(() => {
-    const keywords = search.toLowerCase().split(' ').filter(Boolean)
+    const keywords = search!.toLowerCase().split(' ').filter(Boolean)
 
     if (keywords.length === 0) {
       setResult([])
