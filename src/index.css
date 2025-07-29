@@ -104,7 +104,8 @@ ul {
     display: none;
   }
 
-  .container {
+  .container,
+  .containerWoHeight {
     padding-top: 90px;
   }
 }
