@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
-import { fetchCategory, sortData } from '../utils/categoryUtils'
-import type { GroupedCategory } from '../types'
+import { fetchCategory, sortData } from '../../utils/categoryUtils'
+import type { GroupedCategory } from '../../types'
 import { useNavigate } from 'react-router-dom'
 
 

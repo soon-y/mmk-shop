@@ -1,8 +1,8 @@
-import type { ProductSortedProps } from '../types'
-import { getQntFromCartCookie } from '../utils/cookiesUtils'
-import { getQntFromUserCart } from '../utils/userUtils'
+import type { ProductSortedProps } from '../../types'
+import { getQntFromCartCookie } from '../../utils/cookiesUtils'
+import { getQntFromUserCart } from '../../utils/userUtils'
 import { useNavigate } from 'react-router-dom'
-import { useAuth } from '../context/auth'
+import { useAuth } from '../../context/auth'
 import { useState, useEffect } from 'react'
 
 function AddToCartBox({ product, sizeIndex, colorIndex, addtoCart }: {
@@ -29,7 +29,7 @@ function AddToCartBox({ product, sizeIndex, colorIndex, addtoCart }: {
       if (user) {
         const res = await getQntFromUserCart(user.id, productKey)
         if (res !== false && typeof res.data === 'number') {
-          setQuantity(res.data + 1)
+          setQuantity(res.data)
         } else {
           setQuantity(1)
         }

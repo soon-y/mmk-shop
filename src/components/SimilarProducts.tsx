@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import type { ProductProps, ProductSortedProps } from '../types'
 import { fetchProducts, sortProductData } from '../utils/productUtils'
-import ItemBox from './ItemBox'
+import ItemBox from './box/ItemBox'
 
 function SimilarProducts({ category, productIndex }: { category: number, productIndex: number }) {
   const [products, setProducts] = useState<ProductSortedProps[]>()

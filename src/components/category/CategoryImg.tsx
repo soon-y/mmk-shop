@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
-import { fetchCategory } from '../utils/categoryUtils'
-import type { CategoryProps } from '../types'
+import { fetchCategory } from '../../utils/categoryUtils'
+import type { CategoryProps } from '../../types'
 
 function CategoryImg({
   categoryID, navWidth, mobile

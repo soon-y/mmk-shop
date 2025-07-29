@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef } from 'react'
-import { fetchCategory, sortData } from '../utils/categoryUtils'
-import type { GroupedCategory } from '../types'
+import { fetchCategory, sortData } from '../../utils/categoryUtils'
+import type { GroupedCategory } from '../../types'
 import { useNavigate, useLocation } from 'react-router-dom'
-import { isTouchDevice, useWindowSize } from '../utils/window'
+import { isTouchDevice, useWindowSize } from '../../utils/window'
 
 function Navigation({ groupID, mobile, setGroupID, setClicked, setNavWidth, setCategoryID, classname = '' }: {
   groupID?: number | null,

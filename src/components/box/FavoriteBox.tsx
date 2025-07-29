@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import type { CategoryProps, UserSelectionProps, ProductSortedProps } from '../types'
-import HeartIcon from '../asset/HeartIcon'
-import { fetchCategory } from '../utils/categoryUtils'
-import Button from './ui/button'
+import type { CategoryProps, UserSelectionProps, ProductSortedProps } from '../../types'
+import HeartIcon from '../../asset/HeartIcon'
+import { fetchCategory } from '../../utils/categoryUtils'
+import Button from '../ui/button'
 
 function FavoriteBox({ product, colorIndex, classname, setClicked }: {
   product: ProductSortedProps,
@@ -33,7 +33,7 @@ function FavoriteBox({ product, colorIndex, classname, setClicked }: {
         if (hasValueGreaterThanZero) setStockAvailable(true)
       }
     }
-  }, [])
+  }, [product])
 
   useEffect(() => {
     setFavInfo({ id: product.id, size: 0, color: colorIndex })

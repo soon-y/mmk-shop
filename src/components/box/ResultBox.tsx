@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import type { ProductResultProps } from '../types'
-import HeartIcon from '../asset/HeartIcon'
+import type { ProductResultProps } from '../../types'
+import HeartIcon from '../../asset/HeartIcon'
 
 function ResultBox({ product, color, setClicked }: {
   product: ProductResultProps,

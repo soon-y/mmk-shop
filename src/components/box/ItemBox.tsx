@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import type { ProductSortedProps } from '../types'
-import HeartIcon from '../asset/HeartIcon'
-import { getCategoryGroupName } from '../utils/categoryUtils'
+import type { ProductSortedProps } from '../../types'
+import HeartIcon from '../../asset/HeartIcon'
+import { getCategoryGroupName } from '../../utils/categoryUtils'
+import { urlGenerator } from '../../utils/productUtils'
 
 function ItemBox({ product, color, classname }: {
   product: ProductSortedProps,
@@ -27,12 +28,12 @@ function ItemBox({ product, color, classname }: {
   }, [colorIndex])
 
   return (
-    <div className={`relative ${classname}`}>
+    <div className={`relative ${classname} min-w-[140px]`}>
       <HeartIcon info={favInfo} classname='absolute right-2 top-[calc(100%-124px)] z-10' />
       <div
-        onClick={() => navigate(`/products/item?group=${categoryName}&id=${product.id}&color=${colorIndex}`)} key={product.id} className='flex flex-col cursor-pointer'
-      >
-        <div className='relative'>
+        onClick={() => navigate(urlGenerator(categoryName, product.id, colorIndex))} key={product.id} className='flex flex-col cursor-pointer'
+      > 
+        <div>
           <div className='w-full aspect-square rounded-md overflow-hidden'>
             <img src={product.images[colorIndex][0]} alt="Product" className='rounded-md hover:scale-105 duration-500' />
           </div>
