@@ -14,6 +14,29 @@ export const fetchCustomer = async (): Promise<AxiosResponse | false> => {
   }
 }
 
+export const fetchAddress = async (id: string): Promise<AxiosResponse<any> | null> => {
+  try {
+    const res = await axios.get('https://mmk-backend.onrender.com/users/address', {
+      params: { id },
+    })
+    return res
+  } catch (err) {
+    console.error('Failed to fetch address:', err)
+    return null
+  }
+}
+
+export const fetchBillingAddr = async (id: string): Promise<AxiosResponse<any> | null> => {
+  try {
+    const res = await axios.get('https://mmk-backend.onrender.com/users/billing', {
+      params: { id },
+    })
+    return res
+  } catch (err) {
+    return null
+  }
+}
+
 export const register = async (email: string, password: string, firstName: string, lastName: string) => {
   try {
     const res = await axios.post('https://mmk-backend.onrender.com/auth/registerCustomer', { email, password, firstName, lastName })
@@ -43,7 +66,7 @@ export const login = async (email: string, password: string): Promise<AxiosRespo
 
     if (res.status === 200 || res.status === 201) {
       localStorage.setItem('MMKtoken', res.data.access_token)
-      
+
       return res
     }
 
