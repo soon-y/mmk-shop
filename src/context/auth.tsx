@@ -1,12 +1,14 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
 import axios, { type AxiosResponse } from 'axios'
-import { fetchCustomer } from '../utils/profileUtils'
-import type { UserProps } from '../types'
+import { fetchAddress, fetchBillingAddr, fetchCustomer } from '../utils/profileUtils'
+import type { AddrProps, UserProps } from '../types'
 import { deleteCookie, getCookie } from '../utils/cookiesUtils'
 import { getCookiesProducts } from '../utils/productUtils'
 
 interface AuthContextType {
   user: UserProps | null
+  addr: AddrProps[] | null
+  billingAddr: AddrProps[] | null
   isAuthenticated: boolean
   loading: boolean
   setUser: React.Dispatch<React.SetStateAction<UserProps | null>>
@@ -14,10 +16,19 @@ interface AuthContextType {
   refreshUser: () => Promise<void>
   logout: () => void
   syncLocalData: (user: UserProps) => Promise<void>
+  updateInfo: (id: string, info: Record<string, any>) => Promise<boolean>
+  updateAddr: (id: string, index: number, info: Record<string, any>) => Promise<boolean>
+  updateBillingAddr: (id: string, index: number, info: Record<string, any>) => Promise<boolean>
+  addAddr: (info: Record<string, any>) => Promise<boolean>
+  addBillingAddr: (info: Record<string, any>) => Promise<boolean>
+  deleteAddr: (id: string, index: number, target: string) => Promise<boolean>
+  updateAddrSelection: (id: string, index: number, target: string) => Promise<boolean>
 }
 
 const AuthContext = createContext<AuthContextType>({
   user: null,
+  addr: null,
+  billingAddr: null,
   isAuthenticated: false,
   loading: true,
   setUser: () => { },
@@ -25,10 +36,19 @@ const AuthContext = createContext<AuthContextType>({
   refreshUser: async () => { },
   logout: () => { },
   syncLocalData: async () => { },
+  updateInfo: async () => false,
+  updateAddr: async () => false,
+  updateBillingAddr: async () => false,
+  addAddr: async () => false,
+  addBillingAddr: async () => false,
+  deleteAddr: async () => false,
+  updateAddrSelection: async () => false,
 })
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<UserProps | null>(null)
+  const [addr, setAddr] = useState<AddrProps[] | null>(null)
+  const [billingAddr, setBillingAddr] = useState<AddrProps[] | null>(null)
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [loading, setLoading] = useState(true)
 
@@ -49,6 +69,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       } else {
         setIsAuthenticated(true)
         setUser(result.data)
+
+        const addr = await fetchAddress(result.data.id)
+        if (addr && (addr.status === 200 || addr.status === 201)) {
+          setAddr(addr.data)
+        }
+
+        const billingAddr = await fetchBillingAddr(result.data.id)
+        if (billingAddr && (billingAddr.status === 200 || billingAddr.status === 201)) {
+          setBillingAddr(billingAddr.data)
+        }
+
       }
     } catch {
       setIsAuthenticated(false)
@@ -152,9 +183,145 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     deleteCookie('cart')
   }
 
+  const updateInfo = async (
+    id: string,
+    info: Record<string, any>
+  ): Promise<boolean> => {
+    try {
+      const res = await axios.post('https://mmk-backend.onrender.com/users/updateInfo', { id, info })
+      if (res.status === 200 || res.status === 201) {
+        await refreshUser()
+        return true
+      }
+      return false
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        console.error('Update failed:', err.message)
+      } else {
+        console.error('Unexpected error:', err)
+      }
+      return false
+    }
+  }
+
+  const updateAddr = async (
+    id: string, index: number,
+    info: Record<string, any>
+  ): Promise<boolean> => {
+    try {
+      const res = await axios.post('https://mmk-backend.onrender.com/users/updateAddr', { id, index, info })
+      if (res.status === 200 || res.status === 201) {
+        await refreshUser()
+        return true
+      }
+      return false
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        console.error('Update failed:', err.message)
+      } else {
+        console.error('Unexpected error:', err)
+      }
+      return false
+    }
+  }
+
+  const updateBillingAddr = async (
+    id: string, index: number,
+    info: Record<string, any>
+  ): Promise<boolean> => {
+    try {
+      const res = await axios.post('https://mmk-backend.onrender.com/users/updateBillingAddr', { id, index, info })
+      if (res.status === 200 || res.status === 201) {
+        await refreshUser()
+        return true
+      }
+      return false
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        console.error('Update failed:', err.message)
+      } else {
+        console.error('Unexpected error:', err)
+      }
+      return false
+    }
+  }
+
+  const addAddr = async (info: Record<string, any>): Promise<boolean> => {
+    try {
+      const res = await axios.post('https://mmk-backend.onrender.com/users/addAddr', { info })
+      if (res.status === 200 || res.status === 201) {
+        await refreshUser()
+        return true
+      }
+      return false
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        console.error('Update failed:', err.message)
+      } else {
+        console.error('Unexpected error:', err)
+      }
+      return false
+    }
+  }
+
+  const addBillingAddr = async (info: Record<string, any>): Promise<boolean> => {
+    try {
+      const res = await axios.post('https://mmk-backend.onrender.com/users/addBillingAddr', { info })
+      if (res.status === 200 || res.status === 201) {
+        await refreshUser()
+        return true
+      }
+      return false
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        console.error('Update failed:', err.message)
+      } else {
+        console.error('Unexpected error:', err)
+      }
+      return false
+    }
+  }
+
+  const deleteAddr = async (id: string, index: number, target: string): Promise<boolean> => {
+    try {
+      const res = await axios.post('https://mmk-backend.onrender.com/users/deleteAddr', { id, index, target })
+      if (res.status === 200 || res.status === 201) {
+        await refreshUser()
+        return true
+      }
+      return false
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        console.error('Update failed:', err.message)
+      } else {
+        console.error('Unexpected error:', err)
+      }
+      return false
+    }
+  }
+
+  const updateAddrSelection = async (id: string, index: number, target: string): Promise<boolean> => {
+    try {
+      const res = await axios.post('https://mmk-backend.onrender.com/users/updateAddrSelection', { id, index, target })
+      if (res.status === 200 || res.status === 201) {
+        await refreshUser()
+        return true
+      }
+      return false
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        console.error('Update failed:', err.message)
+      } else {
+        console.error('Unexpected error:', err)
+      }
+      return false
+    }
+  }
+
   return (
     <AuthContext.Provider
-      value={{ user, setUser, isAuthenticated, loading, login, logout, refreshUser, syncLocalData }}
+      value={{ user, setUser, isAuthenticated, loading, login, logout, refreshUser, syncLocalData, updateInfo, 
+        addr, billingAddr, updateAddr, updateBillingAddr, addAddr, addBillingAddr, deleteAddr, updateAddrSelection }}
     >
       {children}
     </AuthContext.Provider>
