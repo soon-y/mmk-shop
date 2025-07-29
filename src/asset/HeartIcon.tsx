@@ -1,9 +1,6 @@
-import React, { forwardRef, useEffect, useState } from 'react'
-import { exist, getCookie, removeCookie, saveCookie } from '../utils/cookiesUtils'
-import { useAuth } from '../context/auth'
-import { addUserSelection, deleteUserSelection, fetchUserSelection } from '../utils/userUtils'
+import React, { forwardRef } from 'react'
 import type { UserSelectionProps } from '../types'
-import { useLocation } from 'react-router-dom'
+import { useFavorites } from '../context/favorites'
 
 interface HeartIconProps extends Omit<React.SVGProps<SVGSVGElement>, 'info'> {
   info?: UserSelectionProps
@@ -14,73 +11,10 @@ interface HeartIconProps extends Omit<React.SVGProps<SVGSVGElement>, 'info'> {
 
 const HeartIcon = forwardRef<SVGSVGElement, HeartIconProps>(
   ({ classname, info, onClick, activeInit, ...props }, ref) => {
-    const [active, setActive] = useState<boolean>(activeInit ? activeInit : false)
+    const { isFavorite, toggleFavorite, loadFavorites } = useFavorites()
+    const active = info ? isFavorite(info) : activeInit
     const magenta = active ? '#e3007f' : '#818181'
     const cyan = active ? '#00a0e8' : '#818181'
-    const { user } = useAuth()
-    const pathname = useLocation().pathname
-
-    useEffect(() => {
-      if (typeof active === 'boolean') setActive(activeInit!)
-    }, [activeInit])
-
-    useEffect(() => {
-      const checkFavorite = async () => {
-        if (!info) return
-
-        let favorites: UserSelectionProps[] = []
-
-        if (user) {
-          const res = await fetchUserSelection('favorites', user.id)
-          if (res && Array.isArray(res)) {
-            favorites = res
-          }
-        } else {
-          const favoritesRaw = getCookie('favorites')
-          if (favoritesRaw) {
-            try {
-              favorites = JSON.parse(favoritesRaw)
-            } catch {
-              favorites = []
-            }
-          }
-        }
-
-        const existing = exist(favorites, info)
-
-        setActive(existing > -1)
-      }
-
-      checkFavorite()
-    }, [info, user])
-
-    const handleFavorite = async () => {
-      if (!info) return
-
-      setActive(prev => !prev)
-
-      if (!active) {
-        if (user) {
-          addUserSelection('favorites', user.id, info)
-        } else {
-          saveCookie('favorites', info)
-        }
-        if (pathname.includes('cart')) {
-          removeCookie('cart', info)
-          window.location.reload()
-        }
-      } else {
-        if (user) {
-          deleteUserSelection('favorites', user.id, info)
-        } else {
-          removeCookie('favorites', info)
-        }
-      }
-
-      if (pathname.includes('favorites')) {
-        window.location.reload()
-      }
-    }
 
     return (
       <svg
@@ -91,7 +25,8 @@ const HeartIcon = forwardRef<SVGSVGElement, HeartIconProps>(
         height="24"
         ref={ref}
         onClick={onClick ? onClick : () => {
-          handleFavorite()
+          toggleFavorite(info!)
+          loadFavorites()
         }}
         className={`${classname} duration-500 cursor-pointer`}
         {...props}
