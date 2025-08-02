@@ -48,7 +48,7 @@ function Orders() {
                     <p className='text-xs text-gray-400 uppercase'>Order: {el.orderId}</p>
                     <p className='py-1 uppercase font-bold'>{el.status}</p>
                     <p className='text-xs'>{stringToDate(el.created_at!)}</p>
-                    <p className='font-bold'>€{el.totalAmount}</p>
+                    <p className='font-bold'>€{el.paidAmount}</p>
                   </div>
                   <div className='flex my-2 overflow-x-auto flex-nowrap hide-scrollbar px-4 gap-2'>
                     {el.products.map((p, j) => (

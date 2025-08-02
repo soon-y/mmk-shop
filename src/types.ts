@@ -3,6 +3,7 @@ export type ProductProps = {
   name: string
   category: number
   price: number
+  discount: number
   stock: string
   images: string[]
   description: string
@@ -20,6 +21,7 @@ export type ProductResultProps = {
   categoryGroup: string
   category: string
   price: number
+  discount: number
   stock: number[][]
   images: string[][]
   description: string
@@ -36,6 +38,7 @@ export type ProductDisplayProps = {
   name: string
   category: number
   price: number
+  discount: number
   stock: string
   images: string[]
   size: string
@@ -49,6 +52,7 @@ export type ProductSortedProps = {
   name: string
   category: number
   price: number
+  discount: number
   stock: number[][]
   images: string[][]
   description: string

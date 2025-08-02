@@ -28,18 +28,29 @@ function ItemBox({ product, color, classname }: {
   }, [colorIndex])
 
   return (
-    <div className={`relative ${classname} min-w-[140px]`}>
+    <div className={`relative ${classname} min-w-[160px]`}>
       <HeartIcon info={favInfo} classname='absolute right-2 top-[calc(100%-124px)] z-10' />
       <div
         onClick={() => navigate(urlGenerator(categoryName, product.id, colorIndex))} key={product.id} className='flex flex-col cursor-pointer'
-      > 
+      >
         <div>
           <div className='w-full aspect-square rounded-md overflow-hidden'>
             <img src={product.images[colorIndex][0]} alt="Product" className='rounded-md hover:scale-105 duration-500' />
+            {product.discount !== product.price &&
+              <p className='font-bold text-sm absolute top-1 right-1 bg-red-500 px-2 py-1 rounded-md text-white'>
+                {Math.round((product.price - product.discount) / product.price * 100)}%
+              </p>
+            }
           </div>
         </div>
         <p className='mt-2 text-sm'>{product.name}</p>
-        <p className='font-bold text-sm'>€ {product.price.toFixed(2)}</p>
+        <div className='flex gap-2'>
+          <p className='font-bold text-sm'>€ {product.discount.toFixed(2)}</p>
+          {product.discount !== product.price &&
+            <p className='text-gray-400 font-bold text-sm line-through'>€ {product.price.toFixed(2)}
+            </p>
+          }
+        </div>
         <p className="text-xs flex gap-1">
           {product.size.map((el, i) => (
             <span key={i}>{el}</span>

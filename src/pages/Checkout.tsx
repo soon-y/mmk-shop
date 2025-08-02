@@ -20,6 +20,8 @@ function Checkout() {
   const [openPackage, setOpenPackage] = useState<boolean>(false)
   const { products, userSelection, loading, deleteProduct, totalQnt, dropCart } = useCart()
   const [deliveryCharge, setDeliveryCharge] = useState<number>(0)
+  const [totalAmount, setTotal] = useState<number>(0)
+  const [discount, setDiscount] = useState<number>(0)
   const { user, addr, billingAddr } = useAuth()
   const [addrIndex, setAddrIndex] = useState<number>(-1)
   const [billingAddrIndex, setBillingAddrIndex] = useState<number>(-1)
@@ -31,17 +33,21 @@ function Checkout() {
     setProductsInCart(products)
     setUserCart(userSelection)
     packageRef.current?.scrollIntoView({ behavior: 'smooth' })
-    console.log(userSelection)
   }, [products, userSelection])
 
   useEffect(() => {
     let total = 0
+    let discount = 0
 
     userCart.forEach((el, i) => {
       const quantity = el.qnt ?? 1
       total += quantity * productsInCart[i].price
+      discount += quantity * productsInCart[i].discount
     })
+
     const deliveryCharge = total >= 50 ? 0 : 1.49
+    setDiscount(total-discount)
+    setTotal(total)
     setDeliveryCharge(deliveryCharge)
   }, [userCart])
 
@@ -136,21 +142,15 @@ function Checkout() {
             } onClick={() => {
               setWaiting(true)
 
-              let total: number = 0
-              userCart.forEach((el, i) => {
-                const quantity = el.qnt ?? 1
-                total += quantity * productsInCart[i].price
-              })
-
               addOrder({
                 userId: user!.id,
                 status: 'ordered',
-                totalAmount: total,
-                discount: 0,
+                totalAmount: totalAmount,
+                discount: discount,
                 shippingFee: deliveryCharge,
-                paidAmount: total + deliveryCharge,
+                paidAmount: totalAmount - discount + deliveryCharge,
                 paymentMethod: user!.payment!,
-                paymentStatus: 'processed',
+                paymentStatus: 'approved',
                 transactionId: '',
                 shippingAddr: addr![addrIndex].street + ' ' + addr![addrIndex].postalCode + ' ' + addr![addrIndex].city + ' ' + addr![addrIndex].country,
                 billingAddr: billingAddr![billingAddrIndex].street + ' ' + billingAddr![billingAddrIndex].postalCode + ' ' + billingAddr![billingAddrIndex].city + ' ' + billingAddr![billingAddrIndex].country,

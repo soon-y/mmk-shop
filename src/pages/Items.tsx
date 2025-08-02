@@ -80,8 +80,8 @@ function Items() {
           filterSize.some(size => product.size.includes(size))
 
         const matchesPrice =
-          product.price >= filterPriceRange[0] &&
-          product.price <= filterPriceRange[1]
+          product.discount >= filterPriceRange[0] &&
+          product.discount <= filterPriceRange[1]
 
         return matchesColor && matchesSize && matchesPrice
       })

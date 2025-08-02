@@ -37,11 +37,19 @@ function ResultBox({ product, color, setClicked }: {
           <img src={product.images[colorIndex][0]} alt="Product" className=' cursor-pointer rounded-md hover:scale-105 duration-500' />
         </div>
         <HeartIcon info={favInfo} classname='absolute right-2 top-1 z-10' />
+        {product.discount !== product.price &&
+              <p className='font-bold text-sm absolute top-1 left-1 bg-red-500 px-2 py-1 rounded-md text-white'>
+                {Math.round((product.price - product.discount) / product.price * 100)}%
+              </p>
+            }
       </div>
 
       <div className='h-full flex flex-col gap-1 text-sm'>
         <p>{product.name}</p>
-        <p className='font-bold'>€ {product.price}</p>
+        <div className='flex gap-2'>
+          <p className='font-bold text-sm'>€ {product.discount.toFixed(2)}</p>
+          {product.discount !== product.price && <p className='text-gray-400 font-bold text-sm line-through'>€ {product.price.toFixed(2)}</p>}
+        </div>
         <p className="flex gap-1">
           Size:
           {product.size.map((size, i) => (
@@ -56,7 +64,6 @@ function ResultBox({ product, color, setClicked }: {
             }}></span>
           ))}
         </p>
-        <p>Material: {product.material}</p>
         <p className='text-magenta'>{product.size.length === 1 ?
           product.stock[0][colorIndex] > 0 ? '' : 'Out of stock' : ''}</p>
       </div>

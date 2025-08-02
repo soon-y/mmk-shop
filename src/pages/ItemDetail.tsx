@@ -81,6 +81,11 @@ function ItemDetail() {
               ))}
             </div>
             <HeartIcon classname='md:hidden absolute right-2 bottom-5' info={favInfo} />
+            {product.discount !== product.price &&
+              <p className='font-bold absolute top-2 right-2 bg-red-500 px-2 py-1 rounded-md text-white'>
+                {Math.round((product.price - product.discount) / product.price * 100)}%
+              </p>
+            }
             <div className='md:hidden absolute flex w-full justify-between top-[50%] -translate-y-[50%]'>
               {scrollImgIndex !== 0 ?
                 <ChevronLeft className='mix-blend-difference p-2 w-10 h-10 cursor-pointer text-black' onClick={() => setScrollImgIndex((i) => (i + 1))} />
@@ -99,7 +104,10 @@ function ItemDetail() {
                   <p>{product.name}</p>
                   <HeartIcon classname='hidden md:block' info={favInfo} />
                 </div>
-                <p className='font-bold'>€ {product.price.toFixed(2)}</p>
+                <div className='flex gap-2'>
+                  <p className='font-bold'>€ {product.discount.toFixed(2)}</p>
+                  {product.discount !== product.price && <p className='text-gray-400 font-bold line-through'>€ {product.price.toFixed(2)}</p>}
+                </div>
               </div>
 
               <div className='flex flex-col gap-1 text-sm'>
@@ -132,10 +140,10 @@ function ItemDetail() {
                 </p>
                 <ul>
                   <li>
-                    - Standard Shipping: Free for orders over €50
+                    Standard Shipping: Free for orders over €50
                   </li>
                   <li>
-                    - International Shipping: Available, fees vary by destination
+                    International Shipping: Available, fees vary by destination
                   </li>
                   Please ensure your shipping details are correct at checkout to avoid delays.
                 </ul>
@@ -147,16 +155,16 @@ function ItemDetail() {
                 </p>
                 <ul>
                   <li>
-                    - Credit/Debit Cards (Visa, MasterCard)
+                    Credit/Debit Cards (Visa, MasterCard)
                   </li>
                   <li>
-                    - PayPal
+                    PayPal
                   </li>
                   <li>
-                    - Apple Pay / Google Pay
+                    Apple Pay / Google Pay
                   </li>
                   <li>
-                    - Bank Transfer (selected regions only)
+                    Bank Transfer (selected regions only)
                   </li>
                 </ul>
                 <p>

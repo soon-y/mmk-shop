@@ -7,6 +7,7 @@ function OrderValue() {
   const [productsInCart, setProductsInCart] = useState<ProductSortedProps[]>([])
   const [userCart, setUserCart] = useState<UserSelectionProps[]>([])
   const [total, setTotal] = useState<number>(0)
+  const [discount, setDiscount] = useState<number>(0)
   const [deliveryCharge, setDeliveryCharge] = useState<number>(0)
   const { products, userSelection, loading } = useCart()
 
@@ -17,13 +18,16 @@ function OrderValue() {
 
   useEffect(() => {
     let total = 0
+    let discount = 0
 
     userCart.forEach((el, i) => {
       const quantity = el.qnt ?? 1
       total += quantity * productsInCart[i].price
+      discount += quantity * productsInCart[i].discount
     })
 
     const deliveryCharge = total >= 50 ? 0 : 1.49
+    setDiscount(total-discount)
     setTotal(total)
     setDeliveryCharge(deliveryCharge)
   }, [userCart])
@@ -46,7 +50,7 @@ function OrderValue() {
             </div>
             <div className='flex justify-between'>
               <p>Discount</p>
-              <p className='font-bold text-red-500'>-0 €</p>
+              <p className='font-bold text-red-500'>- {discount.toFixed(2)} €</p>
             </div>
             <div className='flex justify-between mb-2'>
               <div>
@@ -62,7 +66,7 @@ function OrderValue() {
 
           <div className='flex justify-between my-4'>
             <p>TOTAL</p>
-            <p className='font-bold'>{productsInCart.length > 0 && (total + deliveryCharge).toFixed(2)} €</p>
+            <p className='font-bold'>{productsInCart.length > 0 && (total - discount + deliveryCharge).toFixed(2)} €</p>
           </div>
         </div>
       }

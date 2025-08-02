@@ -49,9 +49,19 @@ function FavoriteBox({ product, colorIndex, classname, setClicked }: {
           <div className='bg-gray-100 w-full aspect-square rounded-md overflow-hidden'>
             <img src={product.images[colorIndex][0]} alt="Product" className='rounded-md hover:scale-105 duration-500' />
           </div>
+          {product.discount !== product.price &&
+            <p className='font-bold text-sm absolute top-1 right-1 bg-red-500 px-2 py-1 rounded-md text-white'>
+              {Math.round((product.price - product.discount) / product.price * 100)}%
+            </p>
+          }
         </div>
         <p className='mt-2 text-sm'>{product.name}</p>
-        <p className='font-bold text-sm'>€ {product.price.toFixed(2)}</p>
+        <div className='flex gap-2'>
+          <p className='font-bold text-sm'>€ {product.discount.toFixed(2)}</p>
+          {product.discount !== product.price && <p className='text-gray-400 font-bold text-sm line-through'>€ {product.price.toFixed(2)}
+          </p>
+          }
+        </div>
       </div>
 
       <Button classname='my-4 bg-white border border-gray-500' disabled={!stockAvailable} onClick={() => { setClicked(true) }} >

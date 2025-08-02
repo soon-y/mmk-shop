@@ -49,13 +49,19 @@ function Cart() {
                     </div>
                     <div>
                       <p>{item.name}</p>
-                      <p className='font-semibold'>€ {item.price.toFixed(2)}</p>
+                      <div className='flex gap-2'>
+                        <p className='font-bold'>€ {item.discount.toFixed(2)}</p>
+                        {item.discount !== item.price &&
+                          <p className='text-gray-400 font-bold line-through'>€ {item.price.toFixed(2)}
+                          </p>
+                        }
+                      </div>
                       <div className='text-xs/4 my-2 grid grid-cols-[70px_1fr]'>
                         <p>Color</p><p>{item.color[userCart[i].color]}</p>
                         <p>Size</p><p>{item.size[userCart[i].size]}</p>
                         <p>Quantity</p><p>{userCart[i].qnt === 0 ? 1 : userCart[i].qnt}</p>
                         <p>Total</p>
-                        <p className='font-bold'>{userCart[i].qnt === 0 ? item.price.toFixed(2) : (item.price * userCart[i].qnt!).toFixed(2)} €</p>
+                        <p className='font-bold'>{userCart[i].qnt === 0 ? item.discount.toFixed(2) : (item.discount * userCart[i].qnt!).toFixed(2)} €</p>
                       </div>
                       <QuantityInput index={i} max={item.stock[userCart[i].size][userCart[i].color]} />
                     </div>
