@@ -31,7 +31,6 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
       getUserProducts('cart', user.id).then(({ userItem, filtered }) => {
         setUserSelection(userItem)
         setProducts(filtered)
-        console.log(userItem)
       }).then(() => setLoading(false))
     } else {
       getCookiesProducts('cart').then(({ cookiesItem, filtered }) => {

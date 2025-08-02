@@ -246,7 +246,6 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     try {
       const res = await axios.post('https://mmk-backend.onrender.com/users/addAddr', { info })
       if (res.status === 200 || res.status === 201) {
-        console.log(res)
         await refreshUser()
         return true
       }
