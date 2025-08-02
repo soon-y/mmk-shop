@@ -93,7 +93,7 @@ function Cart() {
           </div>
 
           <div className='flex flex-col gap-4 sticky top-[90px] md:top-[160px] self-start'>
-            <OrderValue />
+            {productsInCart.length > 0 && <OrderValue />}
             {isAuthenticated ?
               <Button disabled={productsInCart.length === 0} onClick={() => navigate('/checkout')}>continue to checkout</Button> :
               <Button onClick={() => setLoginClicked(true)}>log in to checkout</Button>
