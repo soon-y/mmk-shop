@@ -151,8 +151,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             })
           }
         }
-
-        window.location.reload()
       } catch (err) {
         console.error("Failed to sync favorites:", err)
       }
@@ -172,8 +170,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             })
           }
         }
-
-        window.location.reload()
       } catch (err) {
         console.error("Failed to sync cart:", err)
       }
