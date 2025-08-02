@@ -66,7 +66,7 @@ function OrderValue() {
 
           <div className='flex justify-between my-4'>
             <p>TOTAL</p>
-            <p className='font-bold'>{productsInCart.length > 0 && (total - discount + deliveryCharge).toFixed(2)} €</p>
+            <p className='font-bold'>{(total - discount + deliveryCharge).toFixed(2)} €</p>
           </div>
         </div>
       }
