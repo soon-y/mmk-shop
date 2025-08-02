@@ -125,12 +125,16 @@ function ItemDetail() {
               <AddToCartButton product={product} sizeIndex={sizeIndex} colorIndex={colorIndex} setAddtoCart={setAddtoCart} />
 
               <Dropdown title='description'>
-                {product.description}<br />
-                {product.measurement}
+                <p className="whitespace-pre-line">
+                  {product.description}<br />
+                  {product.measurement}
+                </p>
               </Dropdown>
 
               <Dropdown title='material'>
-                {product.material}
+                <p className="whitespace-pre-line">
+                  {product.material}
+                </p>
               </Dropdown>
 
               <Dropdown title='delivery and payment'>
