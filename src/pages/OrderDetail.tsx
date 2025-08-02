@@ -80,29 +80,26 @@ function OrderDetail() {
           <div>
             <p className='font-bold uppercase'>delivery option</p>
             <p>Standard delivery</p>
-            <p>{order.shippingAddr.split(' ')[0]}</p>
-            <p>{order.shippingAddr.split(' ')[1]}</p>
-            <p>{order.shippingAddr.split(' ')[2]}</p>
-            <p>{order.shippingAddr.split(' ')[3]}</p>
+            <p>{order.shippingAddr}</p>
           </div>
 
           <hr />
 
           <div>
             <p className='text-gray-500 uppercase'>1 - receive order</p>
-            <p>{stringToDate(order.created_at!)}</p>
+            <p className='font-bold'>{stringToDate(order.created_at!)}</p>
           </div>
           <div>
             <p className='text-gray-500 uppercase'>2 - processing completed</p>
-            <p>{order.dateProcessingCompleted ? stringToDate(order.dateProcessingCompleted) : 'In progress'}</p>
+            <p className='font-bold'>{order.dateProcessingCompleted ? stringToDate(order.dateProcessingCompleted) : 'In progress'}</p>
           </div>
           <div>
             <p className='text-gray-500 uppercase'>3 - shipped</p>
-            <p>{order.dateShipped ? stringToDate(order.dateShipped) : 'In progress'}</p>
+            <p className='font-bold'>{order.dateShipped ? stringToDate(order.dateShipped) : 'In progress'}</p>
           </div>
           <div>
             <p className='text-gray-500 uppercase'>4 - delivered</p>
-            <p>{order.dateDelivered ? stringToDate(order.dateDelivered) : 'In progress'}</p>
+            <p className='font-bold'>{order.dateDelivered ? stringToDate(order.dateDelivered) : 'In progress'}</p>
           </div>
 
           <Dropdown title={`order overview - ${order.products.length === 1 ? '1 item' : order.products.length + ' items'}`}

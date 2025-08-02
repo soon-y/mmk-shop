@@ -23,8 +23,9 @@ function Account() {
 
   return (
     <div className="container grid md:grid-cols-[260px_1fr] gap-4">
-      <div className={`grayscale bg-no-repeat bg-cover bg-center self-start sticky top-[160px] h-[calc(100vh-90px)] md:h-[calc(100vh-160px)] p-4 flex flex-col justify-between gap-8 ${pathname === '/account' ? '' : 'hidden md:flex'}`}
-        style={{ backgroundImage: `url('${windowWidth < 768 ? 'https://qfoncqojmqdoqxleuioe.supabase.co/storage/v1/object/public/banner-img/account_Img.jpg' : ''}')` }}>
+      <div className={`grayscale md:grayscale-0 bg-no-repeat bg-cover bg-center self-start sticky top-[160px] h-[calc(100vh-90px)] md:h-[calc(100vh-160px)] p-4 flex flex-col justify-between gap-8 ${pathname === '/account' ? '' : 'hidden md:flex'}`}
+        style={{ backgroundImage: `url('${windowWidth < 768 ? 'https://qfoncqojmqdoqxleuioe.supabase.co/storage/v1/object/public/banner-img/account_Img.jpg' : ''}')` }}
+      >
         <p className='pt-1'>Welcome <br />
           <span className='font-bold'>{customer?.firstName}</span>
         </p>
@@ -39,7 +40,7 @@ function Account() {
 
       {pathname === '/account' ?
         <div className="hidden md:grid place-items-center bg-no-repeat bg-cover bg-center m-auto w-full h-full orgin-center grayscale"
-          style={{ backgroundImage: `url('https://qfoncqojmqdoqxleuioe.supabase.co/storage/v1/object/public/banner-img//account_Img.jpg')` }}>
+          style={{ backgroundImage: `url('https://qfoncqojmqdoqxleuioe.supabase.co/storage/v1/object/public/banner-img/account_Img.jpg')` }}>
           <h1 className='mix-blend-exclusion text-white'>We are all connected.</h1>
         </div> :
         <div>

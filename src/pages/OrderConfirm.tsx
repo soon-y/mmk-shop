@@ -26,8 +26,8 @@ function OrderConfirmation() {
   return (
     <div className="container p-6 grid justify-center">
       <div className="flex flex-col justify-between gap-8 md:w-[500px]">
-        <h1 className="my-8">Thank you for your order!</h1>
         <div>
+          <h1 className="my-20">Thank you for your order!</h1>
           <div className='grid grid-cols-[110px_1fr] gap-2 md:gap-6'>
             <p>Order number</p>
             <p className='font-bold hover:underline cursor-pointer' onClick={() => naviage(`/account/orders/${orderConfirmation.orderId}`)}>{orderConfirmation.orderId}</p>

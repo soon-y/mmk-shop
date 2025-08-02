@@ -19,14 +19,14 @@ export function deliveryDate(dateString: string): string {
 export function stringToDate(dateString: string): string {
   const date = new Date(dateString)
 
-  const options: Intl.DateTimeFormatOptions = {
-    day: 'numeric',
-    month: 'numeric',
+  const dateOptions: Intl.DateTimeFormatOptions = {
+    day: '2-digit',
+    month: '2-digit',
     year: 'numeric',
   }
-
-  return date.toLocaleDateString('en-GB', options).replace(/\//g, '.')
+  return date.toLocaleDateString('en-GB', dateOptions).replace(/\//g, '.')
 }
+
 
 export const sortedOrders = async (orders: OrderProps[], orderedProducts: OrderedProductProps[]): Promise<SortedOrderProps[]> => {
   const array: SortedOrderProps[] = orders.map(order => ({
