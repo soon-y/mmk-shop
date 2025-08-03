@@ -126,15 +126,38 @@ function ItemDetail() {
 
               <Dropdown title='description'>
                 <p className="whitespace-pre-line">
-                  {product.description}<br />
-                  {product.measurement}
+                  {product.description}
                 </p>
               </Dropdown>
 
+              <Dropdown title='measurement'>
+                {product.size.length === 1 ?
+                  <ul>
+                    {product.measurement.split('\n').map((line, i) => (
+                      <li key={i}>{line}</li>
+                    ))}
+                  </ul>
+                  :
+                  <table>
+                    <tbody>
+                      {product.measurement.split(',').map((line, i) => (
+                        <tr key={i}>
+                          {line.split('|').map((el, j) => (
+                            <td key={j} className='pr-2 py-1 border-b'>{el}</td>
+                          ))}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                }
+              </Dropdown>
+
               <Dropdown title='material'>
-                <p className="whitespace-pre-line">
-                  {product.material}
-                </p>
+                <ul>
+                  {product.material.split('\n').map((line, i) => (
+                    <li key={i}>{line}</li>
+                  ))}
+                </ul>
               </Dropdown>
 
               <Dropdown title='delivery and payment'>
