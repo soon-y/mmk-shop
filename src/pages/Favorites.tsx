@@ -44,7 +44,7 @@ function Favorites() {
             <div className='justify-center flex flex-col gap-4'>
               <div className='grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-5'>
                 <div className='relative aspect-square bg-gray-100 rounded-md overflow-hidden'>
-                  <img className='blur-[10px] opacity-30' src='https://qfoncqojmqdoqxleuioe.supabase.co/storage/v1/object/public/product-img//1751841317762-k5xgmm.jpg' />
+                  <img className='blur-[6px] opacity-30' src='https://qfoncqojmqdoqxleuioe.supabase.co/storage/v1/object/public/product-img/BackpackM.jpg' />
                   <HeartIcon activeInit={true} classname='absolute bottom-2 right-2 animate-bounce' onClick={() => { }} />
                 </div>
               </div>
