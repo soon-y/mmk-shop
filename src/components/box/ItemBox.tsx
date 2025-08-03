@@ -4,6 +4,7 @@ import type { ProductSortedProps } from '../../types'
 import HeartIcon from '../../asset/HeartIcon'
 import { getCategoryGroupName } from '../../utils/categoryUtils'
 import { urlGenerator } from '../../utils/productUtils'
+import MMKColor from '../../asset/mmkColor'
 
 function ItemBox({ product, color, classname }: {
   product: ProductSortedProps,
@@ -58,14 +59,21 @@ function ItemBox({ product, color, classname }: {
         </p>
       </div>
 
-      <p className="text-sm flex gap-1">
+      <div className="text-sm flex gap-1">
         {product.colorHex.map((el, i) => (
-          <span key={i} className="cursor-pointer w-5 my-1 aspect-square rounded-full border-2" onClick={() => { setColorIndex(i) }} style={{
-            backgroundColor: el
-          }}>
-          </span>
+          <div key={i} className='cursor-pointer '>
+            {el !== 'MMK' ?
+              <div className='w-5 my-1 aspect-square rounded-full border-2' onClick={() => { setColorIndex(i) }} style={{
+                backgroundColor: el
+              }}>
+              </div> :
+              <div className='w-5 my-1 aspect-square rounded-full border-2 overflow-hidden'>
+                <MMKColor />
+              </div>
+            }
+          </div>
         ))}
-      </p>
+      </div>
     </div>
   )
 }
