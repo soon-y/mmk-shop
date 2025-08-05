@@ -69,17 +69,17 @@ function Banner() {
         {banners.map((el, i) => (
           <SwiperSlide key={i}>
             <div
-              className="w-[100vw] h-[100vh] flex items-center bg-no-repeat bg-cover bg-center"
+              className="w-[100vw] h-[100vh] flex md:items-center bg-no-repeat bg-cover bg-center"
               style={{
                 backgroundImage: el.image ? `url(${el.image})` : 'none',
                 backgroundColor: el.image ? undefined : '#f3f3f3',
               }}
             >
-              <div className="p-6 flex flex-col gap-4">
-                <p className="font-bold text-4xl text-white">
+              <div className="flex flex-col gap-4 p-6 md:bg-transparent mt-[90px] md:mt-0">
+                <p className="font-bold text-4xl text-white whitespace-pre-line md:whitespace-normal">
                   {el.title}
                 </p>
-                <p className="text-lg text-white">
+                <p className="text-lg text-white lg:w-[30%] md:w-[50%]">
                   {el.text}
                 </p>
                 {el.buttonLink && el.buttonName && (
