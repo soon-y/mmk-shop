@@ -40,6 +40,14 @@ function Header() {
   }, [clicked])
 
   useEffect(() => {
+    if (groupID) {
+      document.documentElement.style.overflowY = 'hidden'
+    }else {
+      document.documentElement.style.overflowY = 'auto'
+    }
+  }, [groupID])
+
+  useEffect(() => {
     fetchCategory().then((res) => {
       setCategory(res)
     })

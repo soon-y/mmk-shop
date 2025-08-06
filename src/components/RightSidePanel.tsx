@@ -1,4 +1,4 @@
-import { type ReactNode } from 'react'
+import { useEffect, type ReactNode } from 'react'
 import { X } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 
@@ -13,6 +13,14 @@ function RightSidePanel({ title, children, clicked, setClicked, groupID, groupNa
 }) {
 
   const navigate = useNavigate()
+
+  useEffect(() => {
+    if (clicked) {
+      document.documentElement.style.overflowY = 'hidden'
+    } else {
+      document.documentElement.style.overflowY = 'auto'
+    }
+  }, [clicked])
 
   return (
     <div className={`relative z-[999] ${classname}`}>

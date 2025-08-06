@@ -13,8 +13,6 @@
   color: rgba(255, 255, 255, 0.87);
   background-color: #242424;
   max-width: 100vw;
-  overflow-y: scroll;
-  overflow-x: hidden;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -23,6 +21,11 @@
   --magenta: #e3007f;
   --blue: #00a0e8;
   --yellow: #ffef00;
+}
+
+html {
+  overflow-y: scroll;
+  overflow-x: hidden;
 }
 
 h1 {
