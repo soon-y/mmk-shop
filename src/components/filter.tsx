@@ -4,6 +4,7 @@ import LeftSidePanel from './RightSidePanel'
 import type { ProductSortedProps } from '../types'
 import DualRangeSlider from './ui/dualRangeSlider'
 import Button from './ui/button'
+import MMKColor from '../asset/mmkColor'
 
 export default function Filter({ products, filterColor, filterSize, filterPriceRange, result, setFilterColor, setFilterSize, setFilterPriceRange }: {
   products: ProductSortedProps[]
@@ -55,7 +56,12 @@ export default function Filter({ products, filterColor, filterSize, filterPriceR
               <div className='flex flex-wrap gap-2'>
                 {colorArr.map((color, i) => (
                   <Selection key={i} array={filterColor} setArray={setFilterColor} value={color}>
-                    <div className='w-6 aspect-square' style={{ background: color }}></div>
+                    {color.includes('#')?
+                      <div className='w-6 aspect-square' style={{ background: color }}></div>:
+                      <div className='w-6 aspect-square overflow-hidden'>
+                        <MMKColor className='w-10 h-10'/>
+                      </div>
+                    }
                   </Selection>
                 ))}
               </div>
