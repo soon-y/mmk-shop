@@ -21,7 +21,7 @@ function Footer() {
   return (
     <>
       {!pathname.includes('checkout') &&
-        <div className='p-4 md:p-6 flex flex-col gap-4'>
+        <div className='p-4 md:p-6 flex flex-col gap-4 bg-white'>
           <div className='grid-cols-4 text-sm hidden md:grid'>
             <div>
               <div className='my-2 font-bold'>Shop</div>
