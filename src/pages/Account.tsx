@@ -24,7 +24,7 @@ function Account() {
   return (
     <div className="container grid md:grid-cols-[260px_1fr] gap-4">
       <div className={`grayscale md:grayscale-0 bg-no-repeat bg-cover bg-center self-start sticky top-[160px] h-[calc(100vh-90px)] md:h-[calc(100vh-160px)] p-4 flex flex-col justify-between gap-8 ${pathname === '/account' ? '' : 'hidden md:flex'}`}
-        style={{ backgroundImage: `url('${windowWidth < 768 ? 'https://qfoncqojmqdoqxleuioe.supabase.co/storage/v1/object/public/banner-img/account_Img.jpg' : ''}')` }}
+        style={{ backgroundImage: `url('${windowWidth < 768 ? 'https://tsgpzphevbucgbhwotly.supabase.co/storage/v1/object/public/banner-img/account_Img.jpg' : ''}')` }}
       >
         <p className='pt-1'>Welcome <br />
           <span className='font-bold'>{customer?.firstName}</span>
