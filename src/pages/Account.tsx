@@ -40,7 +40,7 @@ function Account() {
 
       {pathname === '/account' ?
         <div className="hidden md:grid place-items-center bg-no-repeat bg-cover bg-center m-auto w-full h-full orgin-center grayscale"
-          style={{ backgroundImage: `url('https://qfoncqojmqdoqxleuioe.supabase.co/storage/v1/object/public/banner-img/account_Img.jpg')` }}>
+          style={{ backgroundImage: `url('https://tsgpzphevbucgbhwotly.supabase.co/storage/v1/object/public/banner-img/account_Img.jpg')` }}>
           <h1 className='mix-blend-exclusion text-white'>We are all connected.</h1>
         </div> :
         <div>
